@@ -6,7 +6,7 @@ Jenkins and Docker setup.
 
 ## Authors
 
- * Jason C. McDonald
+Jason C. McDonald
 
 ## Contributions
 
@@ -15,7 +15,7 @@ If you would like to contribute code, please read our
 [Contribution Guide](https://www.mousepawmedia.com/developers/contribution).
 
 All contributions are licensed to us under the
-[MousePaw Media Terms of Development](https://www.mousepawmedia.com/termsofdevelopment)).
+[MousePaw Media Terms of Development](https://www.mousepawmedia.com/termsofdevelopment).
 
 ## License
 
