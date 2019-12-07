@@ -6,24 +6,20 @@ Jenkins and Docker setup.
 
 ## Authors
 
- - Jason C. McDonald
+ * Jason C. McDonald
 
 ## Contributions
 
 We do NOT accept pull requests through GitHub.
 If you would like to contribute code, please read our
-[Contribution Guide][2].
+[Contribution Guide](https://www.mousepawmedia.com/developers/contribution).
 
 All contributions are licensed to us under the
-[MousePaw Media Terms of Development][3].
+[MousePaw Media Terms of Development](https://www.mousepawmedia.com/termsofdevelopment)).
 
 ## License
 
 All files in this repository are licensed under the BSD-3 License, unless
 otherwise indicated. (See LICENSE.md)
 
-The project is owned and maintained by [MousePaw Media][1].
-
-[1]: https://www.mousepawmedia.com/developers
-[2]: https://www.mousepawmedia.com/developers/contribution
-[3]: https://www.mousepawmedia.com/termsofdevelopment
+The project is owned and maintained by [MousePaw Media](https://www.mousepawmedia.com/developers).
