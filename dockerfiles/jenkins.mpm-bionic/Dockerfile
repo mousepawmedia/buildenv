@@ -61,7 +61,7 @@ ENV PATH $JAVA_HOME/bin:$PATH
 RUN apt-get install -y --no-install-recommends git-lfs curl
 
 ARG VERSION=3.40
-ARG AGENT_VERISON=3.40-
+ARG AGENT_VERISON=3.40-1
 
 RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
   && chmod 755 /usr/share/jenkins \
