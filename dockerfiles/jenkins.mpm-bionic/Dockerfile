@@ -60,8 +60,8 @@ ENV PATH $JAVA_HOME/bin:$PATH
 # Download Jenkins client binaries and scripts
 RUN apt-get install -y --no-install-recommends git-lfs curl
 
-ARG VERSION=3.35
-ARG AGENT_VERISON=3.35-5
+ARG VERSION=3.40
+ARG AGENT_VERISON=3.40-
 
 RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
   && chmod 755 /usr/share/jenkins \
