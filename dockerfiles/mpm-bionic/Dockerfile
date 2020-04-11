@@ -62,7 +62,7 @@ ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
 # LLVM [C/C++]
 RUN \
-    echo "deb http://apt.llvm.org/`lsb_release -sc`/ llvm-toolchain-`lsb_release -sc` main" > /etc/apt/sources.list.d/llvm.list && \
+    echo "deb http://apt.llvm.org/`lsb_release -sc`/ llvm-toolchain-`lsb_release -sc`-9 main" > /etc/apt/sources.list.d/llvm.list && \
     wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     apt-get update && \
     apt-get install -y --no-install-recommends python-lldb-9 && \
