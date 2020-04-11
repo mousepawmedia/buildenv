@@ -1,4 +1,4 @@
-# Jenkins Slave: MousePaw Media Build Environment (Bionic)
+# Jenkins Slave: MousePaw Media Build Environment (Xenial)
 # Version: 1.2.1
 #
 # Converts any Ubuntu-based image (FROM ...) into a Jenkins slave.
@@ -46,7 +46,7 @@
 # See https://www.mousepawmedia.com/developers for information
 # on how to contribute to our projects.
 
-FROM registry.mousepawmedia.net/mpm-bionic:latest
+FROM registry.mousepawmedia.net/mpm-xenial:latest
 
 LABEL MAINTAINER="MousePaw Media <developers@mousepawmedia.com>"
 

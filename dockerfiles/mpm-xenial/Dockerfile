@@ -1,4 +1,4 @@
-# MousePaw Media Build Environment (Bionic)
+# MousePaw Media Build Environment (Xenial)
 # Version: 1.2.1
 #
 # Author(s): Jason C. McDonald
@@ -37,7 +37,7 @@
 # See https://www.mousepawmedia.com/developers for information
 # on how to contribute to our projects.
 
-FROM ubuntu:bionic
+FROM ubuntu:xenial
 
 LABEL MAINTAINER="MousePaw Media <developers@mousepawmedia.com>"
 
