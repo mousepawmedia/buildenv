@@ -57,6 +57,9 @@ RUN apt-get install -y --no-install-recommends arcanist autoconf automake \
 # C/C++ Core
 RUN apt-get install -y --no-install-recommends cccc cppcheck valgrind
 
+# Don't warn about apt key
+ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+
 # LLVM [C/C++]
 RUN \
     echo "deb http://apt.llvm.org/`lsb_release -sc`/ llvm-toolchain-`lsb_release -sc` main" > /etc/apt/sources.list.d/llvm.list && \
