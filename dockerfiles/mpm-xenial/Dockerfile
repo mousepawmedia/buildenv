@@ -50,9 +50,9 @@ RUN apt-get update && \
     ln -fs /usr/share/zoneinfo/America/
 
 # Development Core
-RUN apt-get install -y --no-install-recommends arcanist autoconf automake \
-    build-essential ca-certificates checkinstall cmake git libtool php php-curl \
-    php-cli php-xml
+RUN apt-get install -y --no-install-recommends apt-transport-https arcanist \
+    autoconf automake build-essential ca-certificates checkinstall cmake git \
+    libtool php php-curl php-cli php-xml
 
 # C/C++ Core
 RUN apt-get install -y --no-install-recommends cccc cppcheck valgrind
