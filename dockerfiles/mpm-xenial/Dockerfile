@@ -64,8 +64,7 @@ ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 RUN \
     echo "deb http://apt.llvm.org/`lsb_release -sc`/ llvm-toolchain-`lsb_release -sc` main" > /etc/apt/sources.list.d/llvm.list && \
     wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends python-lldb-9 && \
+    apt-get update &&
     apt-get install -y --no-install-recommends libllvm9 llvm-9 llvm-9-dev \
     llvm-9-runtime clang-9 clang-tools-9 libclang-common-9-dev libclang-9-dev \
     libclang1-9 libfuzzer-9-dev lldb-9 lld-9 libc++-9-dev libc++abi-9-dev \
