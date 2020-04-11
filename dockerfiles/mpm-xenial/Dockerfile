@@ -51,8 +51,8 @@ RUN apt-get update && \
 
 # Development Core
 RUN apt-get install -y --no-install-recommends arcanist autoconf automake \
-    build-essential checkinstall cmake git libtool php php-curl php-cli \
-    php-xml
+    build-essential ca-certificates checkinstall cmake git libtool php php-curl \
+    php-cli php-xml
 
 # C/C++ Core
 RUN apt-get install -y --no-install-recommends cccc cppcheck valgrind
