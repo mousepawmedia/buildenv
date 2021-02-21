@@ -91,7 +91,7 @@ RUN apt-get install -y --no-install-recommends python3-sphinx pandoc
 RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
     sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
     apt-get update && \
-    apt-get build-dep python3 && \
+    apt-get build-dep -y python3 && \
     cd /tmp && \
     wget https://www.python.org/ftp/python/3.8.8/Python-3.8.8.tgz && \
     tar xzf Python-3.8.8.tgz && \
