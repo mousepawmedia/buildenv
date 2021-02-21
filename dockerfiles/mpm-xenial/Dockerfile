@@ -46,13 +46,20 @@ RUN export DEBIAN_FRONTEND=noninteractive
 # Core Environment
 RUN apt-get update && \
     apt-get install -y --no-install-recommends lsb-release wget gnupg2 \
-    apt-utils tzdata && \
+    apt-utils tzdata software-properties-common && \
     ln -fs /usr/share/zoneinfo/America/
 
-# Development Core
+# Development Core (including CMake PPA)
 RUN apt-get install -y --no-install-recommends apt-transport-https arcanist \
     autoconf automake build-essential ca-certificates checkinstall cmake git \
     libtool php php-curl php-cli php-xml
+
+# Upgrade CMake via PPA
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null \
+    | gpg --dearmor - \
+    | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null && \
+    apt-add-repository 'deb https://apt.kitware.com/ubuntu/ xenial main' && \
+    apt-get update
 
 # C/C++ Core
 RUN apt-get install -y --no-install-recommends cccc cppcheck valgrind
@@ -86,14 +93,12 @@ RUN apt-get install -y --no-install-recommends python3 python3-pip \
 # Sphinx
 RUN apt-get install -y --no-install-recommends python3-sphinx pandoc
 
-# Python 3.8.0 manual install
-RUN apt-get install -y --no-install-recommends libreadline-gplv2-dev \
-    libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev \
-    libbz2-dev libffi-dev zlib1g-dev && \
+# Python 3.8.8 manual install
+RUN apt-get build-dep python3 && \
     cd /tmp && \
-    wget https://www.python.org/ftp/python/3.8.0/Python-3.8.0.tgz && \
-    tar xzf Python-3.8.0.tgz && \
-    cd Python-3.8.0 && \
+    wget https://www.python.org/ftp/python/3.8.8/Python-3.8.8.tgz && \
+    tar xzf Python-3.8.8.tgz && \
+    cd Python-3.8.8 && \
     ./configure --enable-optimizations && \
     make altinstall
 
