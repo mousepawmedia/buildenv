@@ -58,7 +58,8 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH $JAVA_HOME/bin:$PATH
 
 # Download Jenkins client binaries and scripts
-RUN apt-get install -y --no-install-recommends git-lfs curl
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
+    && apt-get install -y --no-install-recommends git-lfs curl
 
 ARG VERSION=3.40
 ARG AGENT_VERISON=3.40-1
