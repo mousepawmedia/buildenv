@@ -46,7 +46,7 @@ RUN export DEBIAN_FRONTEND=noninteractive
 # Core Environment
 RUN apt-get update && \
     apt-get install -y --no-install-recommends lsb-release wget gnupg2 \
-    apt-utils tzdata software-properties-common && \
+    apt-utils tzdata software-properties-common apt-transport-https ca-certificates && \
     ln -fs /usr/share/zoneinfo/America/
 
 # Development Core

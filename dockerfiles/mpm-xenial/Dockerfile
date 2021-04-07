@@ -46,20 +46,20 @@ RUN export DEBIAN_FRONTEND=noninteractive
 # Core Environment
 RUN apt-get update && \
     apt-get install -y --no-install-recommends lsb-release wget gnupg2 \
-    apt-utils tzdata software-properties-common && \
+    apt-utils tzdata software-properties-common apt-transport-https ca-certificates && \
     ln -fs /usr/share/zoneinfo/America/
 
-# Development Core (including CMake PPA)
-RUN apt-get install -y --no-install-recommends apt-transport-https arcanist \
-    autoconf automake build-essential ca-certificates checkinstall cmake git \
-    libtool php php-curl php-cli php-xml
-
-# Upgrade CMake via PPA
+# Set up CMake PPA
 RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null \
     | gpg --dearmor - \
     | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null && \
     apt-add-repository 'deb https://apt.kitware.com/ubuntu/ xenial main' && \
     apt-get update
+
+# Development Core
+RUN apt-get install -y --no-install-recommends arcanist autoconf automake \
+    build-essential ca-certificates checkinstall cmake git libtool php php-curl \
+    php-cli php-xml
 
 # C/C++ Core
 RUN apt-get install -y --no-install-recommends cccc cppcheck valgrind
