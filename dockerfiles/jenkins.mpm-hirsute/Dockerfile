@@ -1,4 +1,4 @@
-# Jenkins Slave: MousePaw Media Build Environment (Xenial)
+# Jenkins Slave: MousePaw Media Build Environment (Bionic)
 # Version: 1.2.1
 #
 # Converts any Ubuntu-based image (FROM ...) into a Jenkins slave.
@@ -46,7 +46,7 @@
 # See https://www.mousepawmedia.com/developers for information
 # on how to contribute to our projects.
 
-FROM registry.mousepawmedia.net/mpm-xenial:latest
+FROM registry.mousepawmedia.net/mpm-hirsute:latest
 
 LABEL MAINTAINER="MousePaw Media <developers@mousepawmedia.com>"
 
@@ -58,9 +58,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH $JAVA_HOME/bin:$PATH
 
 # Download Jenkins client binaries and scripts
-RUN apt-get install -y curl \
-    && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
-    && apt-get install -y --no-install-recommends git-lfs curl
+RUN apt-get install -y --no-install-recommends git-lfs curl
 
 ARG VERSION=3.40
 ARG AGENT_VERISON=3.40-1

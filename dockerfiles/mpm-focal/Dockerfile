@@ -60,24 +60,29 @@ RUN apt-get install -y --no-install-recommends cccc cppcheck valgrind
 # Don't warn about apt key
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
-# LLVM [C/C++]
+# LLVM/Clang 12 [C/C++]
 RUN \
-    echo "deb http://apt.llvm.org/`lsb_release -sc`/ llvm-toolchain-`lsb_release -sc`-9 main" > /etc/apt/sources.list.d/llvm.list && \
+    echo "deb http://apt.llvm.org/`lsb_release -sc`/ llvm-toolchain-`lsb_release -sc`-12 main" > /etc/apt/sources.list.d/llvm.list && \
     wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     apt-get update && \
-    apt-get install -y --no-install-recommends libllvm9 llvm-9 llvm-9-dev \
-    llvm-9-runtime clang-9 clang-tools-9 libclang-common-9-dev libclang-9-dev \
-    libclang1-9 libfuzzer-9-dev lldb-9 lld-9 libc++-9-dev libc++abi-9-dev \
-    libomp-9-dev && \
-    ln -sf /usr/bin/llvm-symbolizer-9 /usr/bin/llvm-symbolizer && \
-    update-alternatives --install /usr/bin/cc cc /usr/bin/clang-9 30 && \
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-9 30
+    apt-get install -y --no-install-recommends libllvm-12-ocaml-dev libllvm12 \
+    llvm-12 llvm-12-dev llvm-12-doc llvm-12-examples llvm-12-runtime clang-12 \
+    clang-tools-12 clang-12-doc libclang-common-12-dev libclang-12-dev \
+    libclang1-12 clang-format-12 python-clang-12 clangd-12 libfuzzer-12-dev \
+    lldb-12 lld-12 libc++-12-dev libc++abi-12-dev libomp-12-dev && \
+    ln -sf /usr/bin/llvm-symbolizer-12 /usr/bin/llvm-symbolizer && \
+    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 20 && \
+    update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-12 20 && \
+    update-alternatives --install /usr/bin/cc cc /usr/bin/clang 30 && \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 30
 
-# GCC [C/C++]
-RUN apt-get install -y --no-install-recommends gcc g++ gcc-multilib \
-    g++-multilib libc6-dev-i386 && \
-    update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 10 && \
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 10
+# GCC 10 [C/C++]
+RUN apt-get install -y --no-install-recommends gcc-10 g++-10 gcc-10-multilib \
+    g++-10-multilib libc6-dev-i386 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 20 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 20 && \
+    update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 20 && \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 20
 
 # Python
 RUN apt-get install -y --no-install-recommends python3 python3-pip \

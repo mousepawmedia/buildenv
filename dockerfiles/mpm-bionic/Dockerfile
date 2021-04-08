@@ -60,25 +60,29 @@ RUN apt-get install -y --no-install-recommends cccc cppcheck valgrind
 # Don't warn about apt key
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 
-# LLVM [C/C++]
+# LLVM/Clang 11 [C/C++]
 RUN \
-    echo "deb http://apt.llvm.org/`lsb_release -sc`/ llvm-toolchain-`lsb_release -sc`-9 main" > /etc/apt/sources.list.d/llvm.list && \
+    echo "deb http://apt.llvm.org/`lsb_release -sc`/ llvm-toolchain-`lsb_release -sc`-11 main" > /etc/apt/sources.list.d/llvm.list && \
     wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     apt-get update && \
-    apt-get install -y --no-install-recommends python-lldb-9 && \
-    apt-get install -y --no-install-recommends libllvm9 llvm-9 llvm-9-dev \
-    llvm-9-runtime clang-9 clang-tools-9 libclang-common-9-dev libclang-9-dev \
-    libclang1-9 libfuzzer-9-dev lldb-9 lld-9 libc++-9-dev libc++abi-9-dev \
-    libomp-9-dev && \
-    ln -sf /usr/bin/llvm-symbolizer-9 /usr/bin/llvm-symbolizer && \
-    update-alternatives --install /usr/bin/cc cc /usr/bin/clang-9 30 && \
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-9 30
+    apt-get install -y --no-install-recommends libllvm-11-ocaml-dev libllvm11 \
+    llvm-11 llvm-11-dev llvm-11-doc llvm-11-examples llvm-11-runtime clang-11 \
+    clang-tools-11 clang-11-doc libclang-common-11-dev libclang-11-dev \
+    libclang1-11 clang-format-11 python-clang-11 clangd-11 libfuzzer-11-dev \
+    lldb-11 lld-11 libc++-11-dev libc++abi-11-dev libomp-11-dev && \
+    ln -sf /usr/bin/llvm-symbolizer-11 /usr/bin/llvm-symbolizer && \
+    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 20 && \
+    update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 20 && \
+    update-alternatives --install /usr/bin/cc cc /usr/bin/clang 30 && \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 30
 
-# GCC [C/C++]
-RUN apt-get install -y --no-install-recommends gcc g++ gcc-multilib \
-    g++-multilib libc6-dev-i386 && \
-    update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 10 && \
-    update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 10
+# GCC 9 [C/C++]
+RUN apt-get install -y --no-install-recommends gcc-9 g++-9 gcc-9-multilib \
+    g++-9-multilib libc6-dev-i386 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 20 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 20 && \
+    update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 20 && \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 20
 
 # Python
 RUN apt-get install -y --no-install-recommends python3 python3-pip \
