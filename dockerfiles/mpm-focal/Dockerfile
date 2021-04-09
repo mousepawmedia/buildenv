@@ -68,7 +68,7 @@ RUN \
     apt-get install -y --no-install-recommends libllvm-12-ocaml-dev libllvm12 \
     llvm-12 llvm-12-dev llvm-12-doc llvm-12-examples llvm-12-runtime clang-12 \
     clang-tools-12 clang-12-doc libclang-common-12-dev libclang-12-dev \
-    libclang1-12 clang-format-12 python-clang-12 clangd-12 libfuzzer-12-dev \
+    libclang1-12 clang-format-12 clangd-12 libfuzzer-12-dev \
     lldb-12 lld-12 libc++-12-dev libc++abi-12-dev libomp-12-dev && \
     ln -sf /usr/bin/llvm-symbolizer-12 /usr/bin/llvm-symbolizer && \
     update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 20 && \

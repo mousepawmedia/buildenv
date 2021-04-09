@@ -68,7 +68,7 @@ RUN \
     apt-get install -y --no-install-recommends libllvm-11-ocaml-dev libllvm11 \
     llvm-11 llvm-11-dev llvm-11-doc llvm-11-examples llvm-11-runtime clang-11 \
     clang-tools-11 clang-11-doc libclang-common-11-dev libclang-11-dev \
-    libclang1-11 clang-format-11 python-clang-11 clangd-11 libfuzzer-11-dev \
+    libclang1-11 clang-format-11 clangd-11 libfuzzer-11-dev \
     lldb-11 lld-11 libc++-11-dev libc++abi-11-dev libomp-11-dev && \
     ln -sf /usr/bin/llvm-symbolizer-11 /usr/bin/llvm-symbolizer && \
     update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 20 && \
