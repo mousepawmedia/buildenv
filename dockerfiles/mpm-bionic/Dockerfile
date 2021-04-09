@@ -76,11 +76,11 @@ RUN \
     update-alternatives --install /usr/bin/cc cc /usr/bin/clang 30 && \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 30
 
-# GCC 9 [C/C++]
-RUN apt-get install -y --no-install-recommends gcc-9 g++-9 gcc-9-multilib \
-    g++-9-multilib libc6-dev-i386 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 20 && \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 20 && \
+# GCC 7 [C/C++]
+RUN apt-get install -y --no-install-recommends gcc-7 g++-7 gcc-7-multilib \
+    g++-7-multilib libc6-dev-i386 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 20 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 20 && \
     update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 20 && \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 20
 
