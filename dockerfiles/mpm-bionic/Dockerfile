@@ -85,8 +85,8 @@ RUN apt-get install -y --no-install-recommends gcc-7 g++-7 gcc-7-multilib \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 20
 
 # Python
-RUN apt-get install -y --no-install-recommends python3.7 python3.7-pip \
-    python3.7-virtualenv python-dev python3.7-dev virtualenv
+RUN apt-get install -y --no-install-recommends python3 python3-pip \
+    python3-virtualenv pylint3 python-dev python3-dev virtualenv python3.7
 
 # Sphinx
 RUN apt-get install -y --no-install-recommends python3-sphinx pandoc
