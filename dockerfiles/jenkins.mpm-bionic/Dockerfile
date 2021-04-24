@@ -81,5 +81,8 @@ RUN rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
 
+# Create log file
+RUN touch /agent.log && chown mpm:mpm /agent.log
+
 # Switch back to regular user
 USER mpm
