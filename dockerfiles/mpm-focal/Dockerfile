@@ -111,3 +111,10 @@ RUN apt-get install -y --no-install-recommends rsync openssh-client
 
 # Clean up
 RUN rm -rf /var/lib/apt/lists/*
+
+# Configure user (888 for uid/gid is also used by Jenkins; be consistent.)
+RUN groupadd -g 888 mpm && \
+    useradd -r -u 888 -g mpm mpm
+
+# Switch to user
+USER mpm

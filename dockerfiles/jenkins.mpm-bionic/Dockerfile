@@ -50,6 +50,9 @@ FROM registry.mousepawmedia.net/mpm-bionic:latest
 
 LABEL MAINTAINER="MousePaw Media <developers@mousepawmedia.com>"
 
+# Run setup as root
+USER root
+
 # Install Java
 RUN apt-get update \
     && apt-get install --no-install-recommends -y openjdk-8-jre-headless
@@ -77,3 +80,6 @@ RUN wget https://raw.githubusercontent.com/jenkinsci/docker-jnlp-slave/${AGENT_V
 RUN rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
+
+# Switch back to regular user
+USER mpm
