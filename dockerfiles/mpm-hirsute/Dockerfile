@@ -107,7 +107,7 @@ RUN apt-get install -y --no-install-recommends python3-sphinx pandoc
 RUN apt-get install -y --no-install-recommends libcairo2-dev libsdl2-dev libsdl2-mixer-dev
 
 # Install artifact publishing tools
-RUN apt-get install -y --no-install-recommends rsync openssh-client
+RUN apt-get install -y --no-install-recommends sudo rsync openssh-client
 
 # Clean up
 RUN rm -rf /var/lib/apt/lists/*
