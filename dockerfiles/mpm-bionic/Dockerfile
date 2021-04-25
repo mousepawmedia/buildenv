@@ -114,7 +114,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 # Configure user (888 for uid/gid is also used by Jenkins; be consistent.)
 RUN groupadd -g 888 mpm && \
-    useradd -r -u 888 -g mpm mpm && \
+    useradd -mr -u 888 -g mpm mpm && \
     usermod -aG sudo mpm
 
 # Switch to user
