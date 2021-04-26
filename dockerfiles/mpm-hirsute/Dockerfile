@@ -109,13 +109,15 @@ RUN apt-get install -y --no-install-recommends libcairo2-dev libsdl2-dev libsdl2
 # Install artifact publishing tools
 RUN apt-get install -y --no-install-recommends sudo rsync openssh-client
 
+# NOTE: Integrate this: https://github.com/Strider-CD/strider-docker-slave/issues/5
+
 # Clean up
 RUN rm -rf /var/lib/apt/lists/*
 
 # Configure user (888 for uid/gid is also used by Jenkins; be consistent.)
 RUN groupadd -g 888 mpm && \
     useradd -mr -u 888 -g mpm mpm && \
-    usermod -aG sudo mpm
+    echo "mpm  ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/mpm
 
 # Switch to user
 USER mpm
