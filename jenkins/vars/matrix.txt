@@ -1,0 +1,31 @@
+# MousePaw Media: Matrix Builder
+
+This runs a Matrix build according to the MousePaw Media Build System.
+
+## Requirements and Assumptions
+
+The Jenkins instance using this must provide Docker agents from the
+Dockerfiles provided in this repository. These should have the labels
+`mpm-CODENAME`, where `CODENAME` is the Ubuntu codename that relates to the
+Docker image, e.g. `mpm-focal`.
+
+Git must be configured on the Jenkins instance as well, using the
+credential ID `git-ssh`.
+
+The repository must use the MousePaw Media Build System 3.2.0 or later.
+
+## Calling
+
+Three parameters are required when calling this library:
+
+* `project`: the name of the project
+* `repo`: the SSH URL for the repository to clone
+* `branch`: the repository branch to build, usually `devel`
+
+```groovy
+myDeliveryPipeline(
+    project: 'spam-n-eggs'
+    repo: 'ssl://example.com/git/spameggs.git',
+    branch: 'devel'
+)
+```
