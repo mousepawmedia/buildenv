@@ -16,7 +16,7 @@ def call(Map pipelineParams) {
             stage('MatrixBuild') {
                 matrix {
                     agent {
-                        label "mpm-${PLATFORM}"
+                        label "mpm-${env.OS}"
                     }
                     when { anyOf {
                         expression { params.OS_FILTER == 'all' }
