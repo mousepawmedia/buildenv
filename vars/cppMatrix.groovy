@@ -10,12 +10,14 @@ def call(Map pipelineParams) {
             choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
         }
 
-        //agent any
+        agent any
 
         stages {
             stage('MatrixBuild') {
                 matrix {
-                    agent any
+                    agent {
+                        label "mpm-${PLATFORM}"
+                    }
                     when { anyOf {
                         expression { params.OS_FILTER == 'all' }
                         expression { params.OS_FILTER == env.OS }
@@ -33,9 +35,6 @@ def call(Map pipelineParams) {
                             name 'TARGET'
                             values 'debug', 'release'
                         }
-                    }
-                    agent {
-                        label "mpm-${PLATFORM}"
                     }
                     stages {
                         stage('Checkout') {
