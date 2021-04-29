@@ -18,7 +18,28 @@ def call(Map pipelineParams) {
         agent any
 
         stages {
-            stage('MatrixBuild') {
+            stage('Canary') {
+                steps {
+                    checkout ([
+                        $class: 'GitSCM',
+                        branches: [[
+                            name: "refs/heads/${env.BRANCH}"
+                        ]],
+                        extensions: [[
+                            $class: 'RelativeTargetDirectory',
+                            relativeTargetDir: "${env.PROJECT}"
+                        ]],
+                        userRemoteConfigs: [[
+                            credentialsId: 'git-ssh',
+                            url: env.REPO
+                        ]]
+                    ])
+                    sh "cd ${env.PROJECT} && \
+                        echo \"Canary Build\" >> .phabricator-comment && \
+                        make tester_debug"
+                }
+            }
+            stage('Matrix') {
                 matrix {
                     agent {
                         label "mpm-${env.OS}"
