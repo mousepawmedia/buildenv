@@ -10,7 +10,7 @@ def call(Map pipelineParams) {
             choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
         }
 
-        //agent none
+        //agent any
 
         stages {
             stage('MatrixBuild') {
@@ -118,7 +118,7 @@ def call(Map pipelineParams) {
                                 valgrind --leak-check=full --errors-for-leak-kinds=all --error-exitcode=1 ./${env.RUN_WHAT} --runall"
                             }
                         }
-                        stage('Post') {
+                        stage('Post Partial') {
                             steps {
                                 step([
                                     $class: 'PhabricatorNotifier',
@@ -128,10 +128,25 @@ def call(Map pipelineParams) {
                                     commentWithConsoleLinkOnFailure: true,
                                     customComment: true,
                                     preserveFormatting: false,
+                                    sendPartialResults: true
                                 ])
                             }
                         }
                     }
+                }
+            }
+            stage('Post') {
+                steps {
+                    step([
+                        $class: 'PhabricatorNotifier',
+                        commentFile: '.phabricator-comment',
+                        commentOnSuccess: true,
+                        commentSize: '10000',
+                        commentWithConsoleLinkOnFailure: true,
+                        customComment: true,
+                        preserveFormatting: false,
+                        sendPartialResults: true
+                    ])
                 }
             }
         }
