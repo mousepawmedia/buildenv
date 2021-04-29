@@ -15,19 +15,23 @@ def call(Map pipelineParams) {
             REPO = "${pipelineParams.repo}"
         }
 
-        /* The non-matrix tasks, including the canary build, will use Focal/Clang
-         * This must be explicitly declared for the Canary build to work, as it
-         * must rely on the Central builds.
-         */
-        agent {
-            node {
-                label "mpm-focal"
-                customWorkspace "matrix/compiler/clang/label/mpm-focal/"
-            }
-        }
+        agent any
 
         stages {
             stage('Canary') {
+                agent {
+                    /* The canary build, will use Focal/Clang. This must be
+                     * explicitly declared for the Canary build to work, as it
+                     * relies on the Central builds.
+                     */
+                    node {
+                        label "mpm-focal"
+                        customWorkspace "/matrix/compiler/clang/label/mpm-focal/"
+                    }
+                }
+                options {
+                    timeout(time: 3, unit: "MINUTES", activity: true)
+                }
                 steps {
                     checkout ([
                         $class: 'GitSCM',
@@ -43,6 +47,9 @@ def call(Map pipelineParams) {
                             url: env.REPO
                         ]]
                     ])
+                    // Apply patch if specified
+                    sh "cd ${env.PROJECT} ${params.DIFF_ID == '' ? '' : '&& arc patch ${params.DIFF_ID}' }"
+                    // Build project
                     sh "cd ${env.PROJECT} && \
                         echo \"Canary Build (focal/clang)\" >> .phabricator-comment && \
                         make tester_debug"
@@ -91,22 +98,11 @@ def call(Map pipelineParams) {
                                         url: env.REPO
                                     ]]
                                 ])
-                            }
-                        }
-                        stage('Apply Differential') {
-                            // If a Phabricator DIFF ID was provided...
-                            when { not {
-                                expression { params.DIFF_ID == '' }
-                            } }
-                            steps {
-                                // Apply Phabricator Differential, if any
-                                sh 'arc patch ${params.DIFF_ID}'
+                                // Apply patch if specified
+                                sh "cd ${env.PROJECT} ${params.DIFF_ID == '' ? '' : '&& arc patch ${params.DIFF_ID}' }"
                             }
                         }
                         stage('Setup Environment') {
-                            when {
-                                expression { env.COMPILER == 'gcc' }
-                            }
                             environment {
                                 CC = "${env.COMPILER == 'clang' ? 'clang' : 'gcc' }"
                                 CPP = "${env.COMPILER == 'clang' ? 'clang++' : 'g++' }"
@@ -156,6 +152,10 @@ def call(Map pipelineParams) {
                             }
                         }
                         stage('Post Partial') {
+                            // If a Phabricator PHID was provided...
+                            when { not {
+                                expression { params.PHID == '' }
+                            } }
                             steps {
                                 step([
                                     $class: 'PhabricatorNotifier',
@@ -173,6 +173,10 @@ def call(Map pipelineParams) {
                 }
             }
             stage('Post') {
+                // If a Phabricator PHID was provided...
+                when { not {
+                    expression { params.PHID == '' }
+                } }
                 steps {
                     step([
                         $class: 'PhabricatorNotifier',
