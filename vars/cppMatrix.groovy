@@ -15,7 +15,16 @@ def call(Map pipelineParams) {
             REPO = "${pipelineParams.repo}"
         }
 
-        agent any
+        /* The non-matrix tasks, including the canary build, will use Focal/Clang
+         * This must be explicitly declared for the Canary build to work, as it
+         * must rely on the Central builds.
+         */
+        agent {
+            node {
+                label "mpm-focal"
+                customWorkspace "matrix/compiler/clang/label/mpm-focal/"
+            }
+        }
 
         stages {
             stage('Canary') {
@@ -35,14 +44,17 @@ def call(Map pipelineParams) {
                         ]]
                     ])
                     sh "cd ${env.PROJECT} && \
-                        echo \"Canary Build\" >> .phabricator-comment && \
+                        echo \"Canary Build (focal/clang)\" >> .phabricator-comment && \
                         make tester_debug"
                 }
             }
             stage('Matrix') {
                 matrix {
                     agent {
-                        label "mpm-${env.OS}"
+                        node {
+                            label "mpm-${env.OS}"
+                            customWorkspace "matrix/compiler/${env.COMPILER}/label/mpm-${env.OS}/"
+                        }
                     }
                     when { anyOf {
                         expression { params.OS_FILTER == 'all' }
