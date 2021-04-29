@@ -10,9 +10,9 @@ def call(Map pipelineParams) {
             choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
         }
         environment {
-            PROJECT = pipelineParams.project
-            BRANCH = pipelineParams.branch
-            REPO = pipelineParams.repo
+            PROJECT = "${pipelineParams.project}"
+            BRANCH = "${pipelineParams.branch}"
+            REPO = "${pipelineParams.repo}"
         }
 
         agent any
