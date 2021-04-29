@@ -1,0 +1,6 @@
+{
+	"phabricator.uri" : "https://phabricator.mousepawmedia.net",
+	"repository.callsign" : "BLD",
+	"load" : [
+	]
+}
