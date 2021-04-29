@@ -86,7 +86,7 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "cd ${pipelineParams.project} && \
-                                echo \"${env.OS}/${env.COMPILER}: Building\" > .phabricator-comment && \
+                                echo \"${env.OS}/${env.COMPILER}: Building ${env.MAKE_WHAT}\" >> .phabricator-comment && \
                                 make ${env.MAKE_WHAT}"
                             }
                         }
@@ -99,7 +99,7 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "cd ${pipelineParams.project} && \
-                                echo \"${env.OS}/${env.COMPILER}: Testing\" > .phabricator-comment && \
+                                echo \"${env.OS}/${env.COMPILER}: Testing ${env.RUN_WHAT}\" >> .phabricator-comment && \
                                 ./${env.RUN_WHAT} --runall"
                             }
                         }
@@ -112,8 +112,21 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "cd ${pipelineParams.project} && \
-                                echo \"${env.OS}/${env.COMPILER}: Valgrind Testing\" > .phabricator-comment && \
+                                echo \"${env.OS}/${env.COMPILER}: Valgrind Testing ${env.RUN_WHAT}\" >> .phabricator-comment && \
                                 valgrind --leak-check=full --errors-for-leak-kinds=all --error-exitcode=1 ./${env.RUN_WHAT} --runall"
+                            }
+                        }
+                        stage('Post') {
+                            steps {
+                                step([
+                                    $class: 'PhabricatorNotifier',
+                                    commentFile: '.phabricator-comment',
+                                    commentOnSuccess: true,
+                                    commentSize: '10000',
+                                    commentWithConsoleLinkOnFailure: true,
+                                    customComment: true,
+                                    preserveFormatting: false,
+                                ])
                             }
                         }
                     }
