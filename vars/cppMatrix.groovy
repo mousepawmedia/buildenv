@@ -9,6 +9,11 @@ def call(Map pipelineParams) {
             string(name: 'DIFF_ID', defaultValue: '')
             choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
         }
+        environment {
+            PROJECT = pipelineParams.project
+            BRANCH = pipelineParams.branch
+            REPO = pipelineParams.repo
+        }
 
         agent any
 
@@ -42,15 +47,15 @@ def call(Map pipelineParams) {
                                 checkout ([
                                     $class: 'GitSCM',
                                     branches: [[
-                                        name: "refs/heads/${pipelineParams.branch}"
+                                        name: "refs/heads/${env.BRANCH}"
                                     ]],
                                     extensions: [[
                                         $class: 'RelativeTargetDirectory',
-                                        relativeTargetDir: "${pipelineParams.project}"
+                                        relativeTargetDir: "${env.PROJECT}"
                                     ]],
                                     userRemoteConfigs: [[
                                         credentialsId: 'git-ssh',
-                                        url: pipelineParams.repo
+                                        url: env.REPO
                                     ]]
                                 ])
                             }
@@ -86,7 +91,7 @@ def call(Map pipelineParams) {
                                 MAKE_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "cd ${pipelineParams.project} && \
+                                sh "cd ${env.PROJECT} && \
                                 echo \"${env.OS}/${env.COMPILER}: Building ${env.MAKE_WHAT}\" >> .phabricator-comment && \
                                 make ${env.MAKE_WHAT}"
                             }
@@ -99,7 +104,7 @@ def call(Map pipelineParams) {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "cd ${pipelineParams.project} && \
+                                sh "cd ${env.PROJECT} && \
                                 echo \"${env.OS}/${env.COMPILER}: Testing ${env.RUN_WHAT}\" >> .phabricator-comment && \
                                 ./${env.RUN_WHAT} --runall"
                             }
@@ -112,7 +117,7 @@ def call(Map pipelineParams) {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "cd ${pipelineParams.project} && \
+                                sh "cd ${env.PROJECT} && \
                                 echo \"${env.OS}/${env.COMPILER}: Valgrind Testing ${env.RUN_WHAT}\" >> .phabricator-comment && \
                                 valgrind --leak-check=full --errors-for-leak-kinds=all --error-exitcode=1 ./${env.RUN_WHAT} --runall"
                             }
