@@ -10,7 +10,7 @@ def call(Map pipelineParams) {
             choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
         }
 
-        agent none
+        //agent none
 
         stages {
             stage('MatrixBuild') {
@@ -27,11 +27,11 @@ def call(Map pipelineParams) {
                         }
                         axis {
                             name 'COMPILER'
-                            values 'clang' 'gcc'
+                            values 'clang', 'gcc'
                         }
                         axis {
                             name 'TARGET'
-                            values 'debug' 'release'
+                            values 'debug', 'release'
                         }
                     }
                     agent {
@@ -39,20 +39,22 @@ def call(Map pipelineParams) {
                     }
                     stages {
                         stage('Checkout') {
-                            checkout ([
-                                $class: 'GitSCM',
-                                branches: [[
-                                    name: "refs/heads/${pipelineParams.branch}"
-                                ]],
-                                extensions: [[
-                                    $class: 'RelativeTargetDirectory',
-                                    relativeTargetDir: "${pipelineParams.project}"
-                                ]],
-                                userRemoteConfigs: [[
-                                    credentialsId: 'git-ssh',
-                                    url: pipelineParams.repo
-                                ]]
-                            ])
+                            steps {
+                                checkout ([
+                                    $class: 'GitSCM',
+                                    branches: [[
+                                        name: "refs/heads/${pipelineParams.branch}"
+                                    ]],
+                                    extensions: [[
+                                        $class: 'RelativeTargetDirectory',
+                                        relativeTargetDir: "${pipelineParams.project}"
+                                    ]],
+                                    userRemoteConfigs: [[
+                                        credentialsId: 'git-ssh',
+                                        url: pipelineParams.repo
+                                    ]]
+                                ])
+                            }
                         }
                         stage('Apply Differential') {
                             // If a Phabricator DIFF ID was provided...
