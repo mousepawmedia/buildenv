@@ -1,6 +1,8 @@
 # MousePaw Media: Matrix Builder
 
-This runs a Matrix build according to the MousePaw Media Build System.
+This runs a Central Matrix build according to the MousePaw Media Build System.
+Central builds are meant to provide static dependencies to the regular
+Matrix builds on the same Jenkins instance.
 
 ## Requirements and Assumptions
 
@@ -13,6 +15,7 @@ Git must be configured on the Jenkins instance as well, using the
 credential ID `git-ssh`.
 
 The repository must use the MousePaw Media Build System 3.2.0 or later.
+The build will use the `make ready` target.
 
 ## Calling
 
@@ -21,8 +24,10 @@ Two parameters are required when calling this pipeline:
 * `project`: the name of the project
 * `repo`: the SSH URL for the repository to clone
 
+In a Pipeline, assuming this library has been imported, call like this:
+
 ```groovy
-cppMatrix(
+cppMatrixCentral(
     project: 'spam-n-eggs',
     repo: 'ssh://git@example.com/source/spameggs.git'
 )
@@ -34,7 +39,6 @@ parameters, all of which are optional:
 * `BRANCH`: the branch to build/patch on (default `devel`).
 * `PHID`: the Phabricator UUID for the object triggering the build, used for
   reporting build status via Harbormaster.
-* `DIFF_ID`: the Phabricator Differential ID to patch in with `arc patch`.
 * `OS_FILTER`: an option parameter for selecting which OS to build for.
 
 The Matrix build will go through six steps:
@@ -42,14 +46,9 @@ The Matrix build will go through six steps:
 * Canary: checkout & build the Debug version of the code without testing, to
   verify there are no major compiler or environment errors.
 * Matrix: build on all OSes, compilers, and targets
-  * Checkout: Clone the repository and patch in the specified `DIFF_ID` (if any).
+  * Checkout: Clone the repository.
   * Stage Environment: Switch to the selected compiler.
-  * Build: Build the target (Debug/Release) with either `make tester_debug`
-    (on debug) or `make tester` (on release)
-  * Test: Run all Goldilocks tests via `./tester_debug --runall` or
-    `./tester --runall`.
-  * Valgrind: Run all Goldilocks tests through Valgrind with
-    `--leak-check=full --errors-for-leak-kinds=all`.
+  * Build: Build with `make ready`.
   * Report: If `PHID` was provided, send partial results back to Harbormaster
     for this matrix build.
 * Final Report: If `PHID` was provided, send final results back to Harbormaster

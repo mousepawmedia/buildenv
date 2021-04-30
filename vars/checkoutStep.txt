@@ -1,0 +1,27 @@
+# MousePaw Media: Checkout Step
+
+This runs a Git checkout step and patches in a Differential, if one is
+provided.
+
+## Calling
+
+Four parameters are required when calling this pipeline:
+
+* `repo`: the SSH URL for the repository to clone
+* `branch`: the branch name, which will be appended to `refs/heads/`
+* `directory`: the subdirectory name to clone into
+* `diff_id`: the Differential to patch in; can be an empty string, but should
+  not be omitted.
+
+This should be called as a *step* in a pipeline:
+
+```groovy
+checkoutStep(
+    repo: 'ssh://git@example.com/source/spameggs.git'
+    branch: 'devel',
+    directory: 'spam-n-eggs',
+    diff_id: ''
+)
+```
+
+That will handle both the Git checkout and the application of the Differential.

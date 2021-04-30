@@ -4,7 +4,6 @@ def call(Map pipelineParams) {
         parameters {
             string(name: 'BRANCH', defaultValue: 'devel')
             string(name: 'PHID', defaultValue: '')
-            string(name: 'DIFF_ID', defaultValue: '')
             choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
         }
         environment {
@@ -15,31 +14,6 @@ def call(Map pipelineParams) {
         agent any
 
         stages {
-            stage('Canary') {
-                agent {
-                    /* The canary build, will use Focal/Clang. This must be
-                     * explicitly declared for the Canary build to work, as it
-                     * relies on the Central builds.
-                     */
-                    node {
-                        label "mpm-focal"
-                        customWorkspace "/matrix/compiler/clang/label/mpm-focal/"
-                    }
-                }
-                options {
-                    timeout(time: 3, unit: "MINUTES", activity: true)
-                }
-                steps {
-                    checkoutStep(
-                        'repo': env.REPO,
-                        'branch': params.BRANCH,
-                        'directory': 'target',
-                        'diff_id': params.DIFF_ID
-                    )
-                    sh "cd target && \
-                        make tester_debug"
-                }
-            }
             stage('Matrix') {
                 matrix {
                     agent {
@@ -61,10 +35,6 @@ def call(Map pipelineParams) {
                             name 'COMPILER'
                             values 'clang', 'gcc'
                         }
-                        axis {
-                            name 'TARGET'
-                            values 'debug', 'release'
-                        }
                     }
                     stages {
                         stage('Checkout') {
@@ -72,8 +42,8 @@ def call(Map pipelineParams) {
                                 checkoutStep(
                                     'repo': env.REPO,
                                     'branch': params.BRANCH,
-                                    'directory': 'target',
-                                    'diff_id': params.DIFF_ID
+                                    'directory', env.PROJECT,
+                                    'diff_id': ''
                                 )
                             }
                         }
@@ -91,39 +61,12 @@ def call(Map pipelineParams) {
                             options {
                                 timeout(time: 3, unit: "MINUTES", activity: true)
                             }
-                            environment {
-                                MAKE_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
-                            }
                             steps {
-                                sh "cd target && \
-                                make ${env.MAKE_WHAT}"
+                                sh "cd {env.PROJECT} && \
+                                make ready"
                             }
                         }
-                        stage('Test') {
-                            options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
-                            }
-                            environment {
-                                RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
-                            }
-                            steps {
-                                sh "cd target && \
-                                ./${env.RUN_WHAT} --runall"
-                            }
-                        }
-                        stage('Valgrind') {
-                            options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
-                            }
-                            environment {
-                                RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
-                            }
-                            steps {
-                                sh "cd target && \
-                                valgrind --leak-check=full --errors-for-leak-kinds=all --error-exitcode=1 ./${env.RUN_WHAT} --runall"
-                            }
-                        }
-                        stage('Report') {
+                        stage('Post Partial') {
                             // If a Phabricator PHID was provided...
                             when { not {
                                 expression { params.PHID == '' }
@@ -144,7 +87,7 @@ def call(Map pipelineParams) {
                     }
                 }
             }
-            stage('Final Report') {
+            stage('Post') {
                 // If a Phabricator PHID was provided...
                 when { not {
                     expression { params.PHID == '' }

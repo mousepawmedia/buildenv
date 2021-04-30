@@ -1,4 +1,7 @@
 {
     "cmake.configureOnOpen": false,
-    "restructuredtext.languageServer.disabled": true
+    "restructuredtext.languageServer.disabled": true,
+    "files.associations": {
+        "*.txt": "markdown"
+    }
 }
