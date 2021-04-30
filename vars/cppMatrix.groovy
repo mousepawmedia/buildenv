@@ -40,7 +40,7 @@ def call(Map pipelineParams) {
                         ]],
                         extensions: [[
                             $class: 'RelativeTargetDirectory',
-                            relativeTargetDir: "${env.PROJECT}"
+                            relativeTargetDir: "target"
                         ]],
                         userRemoteConfigs: [[
                             credentialsId: 'git-ssh',
@@ -48,9 +48,9 @@ def call(Map pipelineParams) {
                         ]]
                     ])
                     // Apply patch if specified
-                    sh "cd ${env.PROJECT} ${params.DIFF_ID == '' ? '' : '&& arc patch ${params.DIFF_ID}' }"
+                    sh "cd target ${params.DIFF_ID == '' ? '' : '&& arc patch ${params.DIFF_ID}' }"
                     // Build project
-                    sh "cd ${env.PROJECT} && \
+                    sh "cd target && \
                         echo \"Canary Build (focal/clang)\" >> .phabricator-comment && \
                         make tester_debug"
                 }
@@ -91,7 +91,7 @@ def call(Map pipelineParams) {
                                     ]],
                                     extensions: [[
                                         $class: 'RelativeTargetDirectory',
-                                        relativeTargetDir: "${env.PROJECT}"
+                                        relativeTargetDir: "target"
                                     ]],
                                     userRemoteConfigs: [[
                                         credentialsId: 'git-ssh',
@@ -99,7 +99,7 @@ def call(Map pipelineParams) {
                                     ]]
                                 ])
                                 // Apply patch if specified
-                                sh "cd ${env.PROJECT} ${params.DIFF_ID == '' ? '' : '&& arc patch ${params.DIFF_ID}' }"
+                                sh "cd target ${params.DIFF_ID == '' ? '' : '&& arc patch ${params.DIFF_ID}' }"
                             }
                         }
                         stage('Setup Environment') {
@@ -120,7 +120,7 @@ def call(Map pipelineParams) {
                                 MAKE_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "cd ${env.PROJECT} && \
+                                sh "cd target && \
                                 echo \"${env.OS}/${env.COMPILER}: Building ${env.MAKE_WHAT}\" >> .phabricator-comment && \
                                 make ${env.MAKE_WHAT}"
                             }
@@ -133,7 +133,7 @@ def call(Map pipelineParams) {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "cd ${env.PROJECT} && \
+                                sh "cd target && \
                                 echo \"${env.OS}/${env.COMPILER}: Testing ${env.RUN_WHAT}\" >> .phabricator-comment && \
                                 ./${env.RUN_WHAT} --runall"
                             }
@@ -146,7 +146,7 @@ def call(Map pipelineParams) {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "cd ${env.PROJECT} && \
+                                sh "cd target && \
                                 echo \"${env.OS}/${env.COMPILER}: Valgrind Testing ${env.RUN_WHAT}\" >> .phabricator-comment && \
                                 valgrind --leak-check=full --errors-for-leak-kinds=all --error-exitcode=1 ./${env.RUN_WHAT} --runall"
                             }
