@@ -10,8 +10,8 @@ def call(Map pipelineParams) {
         environment {
             PROJECT = "${pipelineParams.project}"
             REPO = "${pipelineParams.repo}"
-            SHELL_BEFORE = "${pipelineParams.containsKey('shell_before') ? pipelineParams.shell_before : ''}"
-            SHELL_AFTER = "${pipelineParams.containsKey('shell_after') ? pipelineParams.shell_after : ''}"
+            SHELL_BEFORE = "${pipelineParams.containsKey('shell_before') ? pipelineParams.shell_before : "."}"
+            SHELL_AFTER = "${pipelineParams.containsKey('shell_after') ? pipelineParams.shell_after : "."}"
         }
 
         agent any
@@ -38,8 +38,10 @@ def call(Map pipelineParams) {
                         'directory': 'target',
                         'diff_id': params.DIFF_ID
                     )
+                    sh "${env.SHELL_BEFORE}"
                     sh "cd target && \
                         make tester_debug"
+                    sh "${env.SHELL_AFTER}"
                 }
             }
             stage('Matrix') {
