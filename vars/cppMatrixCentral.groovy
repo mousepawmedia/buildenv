@@ -9,6 +9,8 @@ def call(Map pipelineParams) {
         environment {
             PROJECT = "${pipelineParams.project}"
             REPO = "${pipelineParams.repo}"
+            SHELL_BEFORE = "${pipelineParams.containsKey('shell_before') ? pipelineParams.shell_before ? : ''}"
+            SHELL_AFTER = "${pipelineParams.containsKey('shell_after') ? pipelineParams.shell_after ? : ''}"
         }
 
         agent any
@@ -62,11 +64,13 @@ def call(Map pipelineParams) {
                                 timeout(time: 3, unit: "MINUTES", activity: true)
                             }
                             steps {
+                                sh "${env.SHELL_BEFORE}"
                                 sh "cd {env.PROJECT} && \
                                 make ready"
+                                sh "${env.SHELL_AFTER}"
                             }
                         }
-                        stage('Post Partial') {
+                        stage('Report') {
                             // If a Phabricator PHID was provided...
                             when { not {
                                 expression { params.PHID == '' }
@@ -87,7 +91,7 @@ def call(Map pipelineParams) {
                     }
                 }
             }
-            stage('Post') {
+            stage('Final Report') {
                 // If a Phabricator PHID was provided...
                 when { not {
                     expression { params.PHID == '' }

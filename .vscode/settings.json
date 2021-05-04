@@ -3,5 +3,9 @@
     "restructuredtext.languageServer.disabled": true,
     "files.associations": {
         "*.txt": "markdown"
-    }
+    },
+    "cSpell.words": [
+        "devel",
+        "phid"
+    ]
 }

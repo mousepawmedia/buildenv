@@ -10,6 +10,8 @@ def call(Map pipelineParams) {
         environment {
             PROJECT = "${pipelineParams.project}"
             REPO = "${pipelineParams.repo}"
+            SHELL_BEFORE = "${pipelineParams.containsKey('shell_before') ? pipelineParams.shell_before ? : ''}"
+            SHELL_AFTER = "${pipelineParams.containsKey('shell_after') ? pipelineParams.shell_after ? : ''}"
         }
 
         agent any
@@ -95,8 +97,10 @@ def call(Map pipelineParams) {
                                 MAKE_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
+                                sh "${env.SHELL_BEFORE}"
                                 sh "cd target && \
                                 make ${env.MAKE_WHAT}"
+                                sh "${env.SHELL_AFTER}"
                             }
                         }
                         stage('Test') {

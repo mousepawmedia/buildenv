@@ -23,6 +23,8 @@ Two parameters are required when calling this pipeline:
 
 * `project`: the name of the project
 * `repo`: the SSH URL for the repository to clone
+* `shell_before`: shell command to run just before build step (default '')
+* `shell_after`: shell command to run just after build step (default '')
 
 In a Pipeline, assuming this library has been imported, call like this:
 
