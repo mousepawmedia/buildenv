@@ -46,7 +46,7 @@
 # See https://www.mousepawmedia.com/developers for information
 # on how to contribute to our projects.
 
-FROM registry.mousepawmedia.net/mpm-bionic:latest
+FROM registry.mousepawmedia.com/mpm-bionic:latest
 
 LABEL MAINTAINER="MousePaw Media <developers@mousepawmedia.com>"
 

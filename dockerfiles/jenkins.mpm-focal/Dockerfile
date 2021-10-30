@@ -46,7 +46,7 @@
 # See https://www.mousepawmedia.com/developers for information
 # on how to contribute to our projects.
 
-FROM registry.mousepawmedia.net/mpm-focal:latest
+FROM registry.mousepawmedia.com/mpm-focal:latest
 
 LABEL MAINTAINER="MousePaw Media <developers@mousepawmedia.com>"
 
