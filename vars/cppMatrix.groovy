@@ -17,6 +17,31 @@ def call(Map pipelineParams) {
         agent any
 
         stages {
+            stage('Unarchive') {
+                steps {
+                    script {
+                        def archives = [env.PROJECT]
+                        archives += pipelineParams.dependencies
+                        def archivesStr = ""
+
+                        // Appending the arr values to a string.
+                        for(int i = 0; i < archives.size(); ++i) {
+                            if (archives.size() - 1 == i) {
+                                archivesStr += archives[i] + ".tar.gz"
+                            } else {
+                                archivesStr += archives[i] + ".tar.gz, "
+                            }
+                        }
+
+                        unarchive mapping: ["mpm-artifacts/": "${archivesStr}"]
+                        
+                        // Extracting .tar files.
+                        for(int i = 0; i < archives.size(); ++i) {
+                            sh "tar -xzvf ${archives[i]}.tar.gz"
+                        }
+                    }
+                }
+            }
             stage('Canary') {
                 agent {
                     /* The canary build, will use Focal/Clang. This must be
