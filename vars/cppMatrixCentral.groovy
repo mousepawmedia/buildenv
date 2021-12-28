@@ -77,7 +77,7 @@ def call(Map pipelineParams) {
 
                                 archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
                                 allowEmptyArchive: false,
-                                caseSensitive: true,
+                                caseSensitive: true
                             }
                         }
                         stage('Report') {
