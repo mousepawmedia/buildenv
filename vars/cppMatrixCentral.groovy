@@ -74,11 +74,11 @@ def call(Map pipelineParams) {
                             steps {
                                 sh "cd ${env.REPO}"
                                 sh "tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
-                            }
 
-                            archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
-                            allowEmptyArchive: false,
-                            caseSensitive: true
+                                archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
+                                allowEmptyArchive: false,
+                                caseSensitive: true
+                            }
                         }
                         stage('Report') {
                             // If a Phabricator PHID was provided...
