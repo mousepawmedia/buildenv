@@ -41,11 +41,11 @@ def call(Map pipelineParams) {
                     stages {
                         stage('Checkout') {
                             steps {
-                                checkoutStep.call(
-                                    repo: env.REPO,
-                                    branch: params.BRANCH,
-                                    directory: env.PROJECT,
-                                    diff_id: ''
+                                checkoutStep(
+                                    'repo': env.REPO,
+                                    'branch': params.BRANCH,
+                                    'directory': env.PROJECT,
+                                    'diff_id': ''
                                 )
                             }
                         }
