@@ -72,7 +72,7 @@ def call(Map pipelineParams) {
                         }
                         stage('Archive') {
                             steps {
-                                sh "cd ${env.REPO}"
+                                sh "cd ${env.PROJECT}"
                                 sh "tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
 
                                 archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
