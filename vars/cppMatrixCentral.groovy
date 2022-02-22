@@ -21,13 +21,14 @@ def call(Map pipelineParams) {
                     agent {
                         node {
                             label "mpm-${env.OS}"
-                            customWorkspace "matrix/compiler/${env.COMPILER}/label/mpm-${env.OS}/"
                         }
                     }
-                    when { anyOf {
-                        expression { params.OS_FILTER == 'all' }
-                        expression { params.OS_FILTER == env.OS }
-                    } }
+                    when { 
+                        anyOf {
+                            expression { params.OS_FILTER == 'all' }
+                            expression { params.OS_FILTER == env.OS }
+                        } 
+                    }
                     axes {
                         axis {
                             name 'OS'
