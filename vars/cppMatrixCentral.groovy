@@ -72,16 +72,16 @@ def call(Map pipelineParams) {
                                 sh "${env.SHELL_AFTER}"
                             }
                         }
-                        stage('Archive') {
-                            steps {
-                                sh "cd ${env.PROJECT}"
-                                sh "tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
+                        // stage('Archive') {
+                        //     steps {
+                        //         sh "cd ${env.PROJECT}"
+                        //         sh "tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
 
-                                archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
-                                allowEmptyArchive: false,
-                                caseSensitive: true
-                            }
-                        }
+                        //         archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
+                        //         allowEmptyArchive: false,
+                        //         caseSensitive: true
+                        //     }
+                        // }
                         stage('Report') {
                             // If a Phabricator PHID was provided...
                             when { not {
