@@ -67,7 +67,7 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
-                                sh "cd {env.PROJECT} && \
+                                sh "cd ${env.PROJECT} && \
                                 make ready"
                                 sh "${env.SHELL_AFTER}"
                             }
