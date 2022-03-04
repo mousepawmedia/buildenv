@@ -20,8 +20,8 @@ def call(Map pipelineParams) {
                 matrix {
                     agent {
                         node {
-                            label "mpm-${env.OS}"
-                            customWorkspace "/workspace/${env.OS}"
+                            label "mpm-${OS}"
+                            customWorkspace "/workspace/${OS}"
                         }
                     }
                     when { 
