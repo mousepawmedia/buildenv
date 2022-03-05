@@ -27,7 +27,7 @@ def call(Map pipelineParams) {
                     when { 
                         anyOf {
                             expression { params.OS_FILTER == 'all' }
-                            expression { params.OS_FILTER == OS }
+                            // expression { params.OS_FILTER == OS }
                         } 
                     }
                     axes {
