@@ -21,7 +21,7 @@ def call(Map pipelineParams) {
                     agent {
                         node {
                             label "mpm-${OS}"
-                            customWorkspace "/workspace/mpm-${OS}/${env.PROJECT}"
+                            customWorkspace "/workspace/mpm-${OS}/"
                         }
                     }
                     when { 
@@ -74,10 +74,10 @@ def call(Map pipelineParams) {
                         }
                         // stage('Archive') {
                         //     steps {
-                        //         sh "cd ${env.PROJECT}"
-                        //         sh "tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
+                        //         sh 'cd ${env.PROJECT} && \
+                        //         tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}''
 
-                        //         archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
+                        //         archiveArtifacts artifacts: '${env.PROJECT}/*.tar.gz',
                         //         allowEmptyArchive: false,
                         //         caseSensitive: true
                         //     }
