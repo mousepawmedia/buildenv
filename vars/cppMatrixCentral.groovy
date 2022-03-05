@@ -27,7 +27,7 @@ def call(Map pipelineParams) {
                     when { 
                         anyOf {
                             expression { params.OS_FILTER == 'all' }
-                            expression { params.OS_FILTER == env.OS }
+                            expression { params.OS_FILTER == OS }
                         } 
                     }
                     axes {
@@ -41,20 +41,20 @@ def call(Map pipelineParams) {
                         }
                     }
                     stages {
-                        stage('Checkout') {
-                            steps {
-                                checkoutStep(
-                                    'repo': env.REPO,
-                                    'branch': params.BRANCH,
-                                    'directory': env.PROJECT,
-                                    'diff_id': ''
-                                )
-                            }
-                        }
+                        // stage('Checkout') {
+                        //     steps {
+                        //         checkoutStep(
+                        //             'repo': env.REPO,
+                        //             'branch': params.BRANCH,
+                        //             'directory': env.PROJECT,
+                        //             'diff_id': ''
+                        //         )
+                        //     }
+                        // }
                         stage('Setup Environment') {
                             environment {
-                                CC = "${env.COMPILER == 'clang' ? 'clang' : 'gcc' }"
-                                CPP = "${env.COMPILER == 'clang' ? 'clang++' : 'g++' }"
+                                CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
+                                CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
                             }
                             steps {
                                 sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
@@ -66,10 +66,10 @@ def call(Map pipelineParams) {
                                 timeout(time: 3, unit: "MINUTES", activity: true)
                             }
                             steps {
-                                sh "${env.SHELL_BEFORE}"
+                                // sh "${env.SHELL_BEFORE}"
                                 sh "cd ${env.PROJECT} && \
                                 make ready"
-                                sh "${env.SHELL_AFTER}"
+                                // sh "${env.SHELL_AFTER}"
                             }
                         }
                         // stage('Archive') {
