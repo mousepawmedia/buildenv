@@ -52,12 +52,12 @@ def call(Map pipelineParams) {
                         //     }
                         // }
                         stage('Setup Environment') {
-                            environment {
-                                CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
-                                CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
-                            }
                             stages {
                                 stage('Bionic & Focal') {
+                                    environment {
+                                        CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
+                                        CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
+                                    }
                                     when {
                                         anyOf {
                                             expression { OS == 'bionic' }
@@ -70,6 +70,10 @@ def call(Map pipelineParams) {
                                     }
                                 }
                                 stage('Hirsute') {
+                                    environment {
+                                        CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
+                                        CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
+                                    }
                                     when {
                                         expression { OS == 'hirsute' }
                                     }
@@ -85,10 +89,10 @@ def call(Map pipelineParams) {
                                 timeout(time: 3, unit: "MINUTES", activity: true)
                             }
                             steps {
-                                // sh "${env.SHELL_BEFORE}"
+                                sh "${env.SHELL_BEFORE}"
                                 sh "cd ${env.PROJECT} && \
                                 make ready"
-                                // sh "${env.SHELL_AFTER}"
+                                sh "${env.SHELL_AFTER}"
                             }
                         }
                         // stage('Archive') {
