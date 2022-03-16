@@ -56,15 +56,27 @@ def call(Map pipelineParams) {
                                 CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
                                 CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
                             }
-                            if (OS == 'hirsute') {
-                                steps {
-                                    sh "update-alternatives --set cc /usr/bin/${env.CC} && \
-                                    update-alternatives --set c++ /usr/bin/${env.CPP}"
+                            stages {
+                                stage('Bionic & Focal') {
+                                    when {
+                                        anyOf {
+                                            expression { OS == 'bionic' }
+                                            expression { OS == 'focal' }
+                                        }
+                                    }
+                                    steps {
+                                        sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
+                                        sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
+                                    }
                                 }
-                            } else {
-                                steps {
-                                    sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
-                                    sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
+                                stage('Hirsute') {
+                                    when {
+                                        expression { OS == 'hirsute' }
+                                    }
+                                    steps {
+                                        sh "update-alternatives --set cc /usr/bin/${env.CC} && \
+                                        update-alternatives --set c++ /usr/bin/${env.CPP}"
+                                    }
                                 }
                             }
                         }
