@@ -75,7 +75,9 @@ def call(Map pipelineParams) {
                                         CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
                                     }
                                     when {
-                                        expression { OS == 'hirsute' }
+                                        anyOf {
+                                            expression { OS == 'hirsute' }
+                                        }
                                     }
                                     steps {
                                         sh "update-alternatives --set cc /usr/bin/${env.CC} && \
