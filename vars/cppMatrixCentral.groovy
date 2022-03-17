@@ -73,15 +73,15 @@ def call(Map pipelineParams) {
                                 timeout(time: 3, unit: "MINUTES", activity: true)
                             }
                             steps {
+                                // sh "${env.SHELL_BEFORE}"
+                                sh "cd ${env.PROJECT}"
                                 // if libdeps is being build Opus has to be reconfigured.
                                 script {
                                     if (env.PROJECT == "libdeps") {
                                         sh "make ubuntu-fix-aclocal"
                                     }
                                 }
-                                // sh "${env.SHELL_BEFORE}"
-                                sh "cd ${env.PROJECT} && \
-                                make ready"
+                                sh "make ready"
                                 // sh "${env.SHELL_AFTER}"
                             }
                         }
