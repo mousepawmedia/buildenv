@@ -73,8 +73,9 @@ def call(Map pipelineParams) {
                                 timeout(time: 3, unit: "MINUTES", activity: true)
                             }
                             steps {
-                                // sh "${env.SHELL_BEFORE}"
+                                sh "${env.SHELL_BEFORE}"
                                 sh "cd ${env.PROJECT}"
+                                sh "ls -l"
                                 // if libdeps is being build Opus has to be reconfigured.
                                 script {
                                     if (env.PROJECT == "libdeps") {
@@ -82,7 +83,7 @@ def call(Map pipelineParams) {
                                     }
                                 }
                                 sh "make ready"
-                                // sh "${env.SHELL_AFTER}"
+                                sh "${env.SHELL_AFTER}"
                             }
                         }
                         // stage('Archive') {
