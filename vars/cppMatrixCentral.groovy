@@ -52,36 +52,18 @@ def call(Map pipelineParams) {
                         //     }
                         // }
                         stage('Setup Environment') {
-                            stages {
-                                stage('Bionic & Focal') {
-                                    environment {
-                                        CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
-                                        CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
-                                    }
-                                    when {
-                                        anyOf {
-                                            expression { OS == 'bionic' }
-                                            expression { OS == 'focal' }
-                                        }
-                                    }
-                                    steps {
-                                        sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
-                                        sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
-                                    }
-                                }
-                                stage('Hirsute') {
-                                    environment {
-                                        CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
-                                        CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
-                                    }
-                                    when {
-                                        anyOf {
-                                            expression { OS == 'hirsute' }
-                                        }
-                                    }
-                                    steps {
+                            environment {
+                                CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
+                                CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
+                            }
+                            steps {
+                                script {
+                                    if (OS == 'hirsute') {
                                         sh "update-alternatives --set cc /usr/bin/${env.CC} && \
                                         update-alternatives --set c++ /usr/bin/${env.CPP}"
+                                    } else {
+                                        sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
+                                        sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
                                     }
                                 }
                             }
@@ -97,10 +79,10 @@ def call(Map pipelineParams) {
                                         sh "make ubuntu-fix-aclocal"
                                     }
                                 }
-                                sh "${env.SHELL_BEFORE}"
+                                // sh "${env.SHELL_BEFORE}"
                                 sh "cd ${env.PROJECT} && \
                                 make ready"
-                                sh "${env.SHELL_AFTER}"
+                                // sh "${env.SHELL_AFTER}"
                             }
                         }
                         // stage('Archive') {
