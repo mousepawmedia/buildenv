@@ -41,16 +41,16 @@ def call(Map pipelineParams) {
                         }
                     }
                     stages {
-                        // stage('Checkout') {
-                        //     steps {
-                        //         checkoutStep(
-                        //             'repo': env.REPO,
-                        //             'branch': params.BRANCH,
-                        //             'directory': env.PROJECT,
-                        //             'diff_id': ''
-                        //         )
-                        //     }
-                        // }
+                        stage('Checkout') {
+                            steps {
+                                checkoutStep(
+                                    'repo': env.REPO,
+                                    'branch': params.BRANCH,
+                                    'directory': env.PROJECT,
+                                    'diff_id': ''
+                                )
+                            }
+                        }
                         stage('Setup Environment') {
                             environment {
                                 CC = "${COMPILER == 'clang' ? 'clang' : 'gcc' }"
