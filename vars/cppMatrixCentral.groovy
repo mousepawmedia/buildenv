@@ -21,7 +21,7 @@ def call(Map pipelineParams) {
                     agent {
                         node {
                             label "mpm-${OS}"
-                            customWorkspace "/workspace/mpm-${OS}/"
+                            customWorkspace "/workspace/${OS}/${COMPILER}"
                         }
                     }
                     when { 
