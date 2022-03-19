@@ -57,9 +57,8 @@ def call(Map pipelineParams) {
                                 CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
                             }
                             steps {
-                                    sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
-                                        sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
-                                }
+                                sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
+                                    sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
                             }
                         }
                         stage('Build') {
