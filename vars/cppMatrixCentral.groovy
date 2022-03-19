@@ -67,21 +67,21 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
-                                sh "cd ./${env.PROJECT} && pwd"
                                 // if libdeps is being build Opus has to be reconfigured.
                                 script {
                                     if (env.PROJECT == "libdeps") {
-                                        sh "make -f Makefile ubuntu-fix-aclocal"
+                                        sh "cd ${env.PROJECT} && \
+                                            make ubuntu-fix-aclocal"
                                     }
                                 }
-                                sh "make ready"
+                                sh "cd ${env.PROJECT} && make ready"
                                 sh "${env.SHELL_AFTER}"
                             }
                         }
                         // stage('Archive') {
                         //     steps {
-                        //         sh 'cd ${env.PROJECT} && \
-                        //         tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}''
+                                // sh 'cd ${env.PROJECT} && \
+                                // tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}''
 
                         //         archiveArtifacts artifacts: '${env.PROJECT}/*.tar.gz',
                         //         allowEmptyArchive: false,
