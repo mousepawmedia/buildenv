@@ -33,7 +33,7 @@ def call(Map pipelineParams) {
                     axes {
                         axis {
                             name 'OS'
-                            values 'bionic', 'focal', 'hirsute'
+                            values 'bionic', 'focal'
                         }
                         axis {
                             name 'COMPILER'
