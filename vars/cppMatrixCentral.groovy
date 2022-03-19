@@ -79,7 +79,7 @@ def call(Map pipelineParams) {
                                 // if libdeps is being build Opus has to be reconfigured.
                                 script {
                                     if (env.PROJECT == "libdeps") {
-                                        sh "cd opus && autoreconf -f -i"
+                                        sh "make ubuntu-fix-aclocal"
                                     }
                                 }
                                 sh "make ready"
