@@ -57,14 +57,8 @@ def call(Map pipelineParams) {
                                 CPP = "${COMPILER == 'clang' ? 'clang++' : 'g++' }"
                             }
                             steps {
-                                script {
-                                    if (OS == 'hirsute') {
-                                        sh "update-alternatives --set cc /usr/bin/${env.CC} && \
-                                        update-alternatives --set c++ /usr/bin/${env.CPP}"
-                                    } else {
-                                        sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
+                                    sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
                                         sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
-                                    }
                                 }
                             }
                         }
@@ -74,12 +68,12 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
-                                sh "ls -l"
                                 sh "cd ${env.PROJECT}"
+                                sh "ls -l"
                                 // if libdeps is being build Opus has to be reconfigured.
                                 script {
                                     if (env.PROJECT == "libdeps") {
-                                        sh "make ubuntu-fix-aclocal"
+                                        sh "make -f Makefile ubuntu-fix-aclocal"
                                     }
                                 }
                                 sh "make ready"
