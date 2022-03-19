@@ -63,7 +63,11 @@ def call(Map pipelineParams) {
                         }
                         stage('Build') {
                             options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
+                                script {
+                                    if (env.PROJECT != "libdeps") {
+                                        timeout(time: 3, unit: "MINUTES", activity: true)
+                                    }
+                                }
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
@@ -78,16 +82,16 @@ def call(Map pipelineParams) {
                                 sh "${env.SHELL_AFTER}"
                             }
                         }
-                        // stage('Archive') {
-                        //     steps {
-                                // sh 'cd ${env.PROJECT} && \
-                                // tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}''
+                        stage('Archive') {
+                            steps {
+                                sh "cd ${env.PROJECT} && \
+                                tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
 
-                        //         archiveArtifacts artifacts: '${env.PROJECT}/*.tar.gz',
-                        //         allowEmptyArchive: false,
-                        //         caseSensitive: true
-                        //     }
-                        // }
+                                archiveArtifacts artifacts: '${env.PROJECT}/*.tar.gz',
+                                allowEmptyArchive: false,
+                                caseSensitive: true
+                            }
+                        }
                         stage('Report') {
                             // If a Phabricator PHID was provided...
                             when { not {
