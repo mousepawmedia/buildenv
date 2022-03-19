@@ -62,9 +62,9 @@ def call(Map pipelineParams) {
                             }
                         }
                         stage('Build') {
-                            // options {
-                            //     timeout(time: 3, unit: "MINUTES", activity: true)
-                            // }
+                            options {
+                                timeout(time: 10, unit: "MINUTES", activity: true)
+                            }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
                                 // if libdeps is being build Opus has to be reconfigured.
@@ -82,7 +82,7 @@ def call(Map pipelineParams) {
                             steps {
                                 sh "cd ${env.PROJECT} && \
                                 tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
-                                
+
                                 archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
                                 allowEmptyArchive: false,
                                 caseSensitive: true
