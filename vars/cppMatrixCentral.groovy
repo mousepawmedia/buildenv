@@ -83,6 +83,9 @@ def call(Map pipelineParams) {
                                 sh "cd ${env.PROJECT} && \
                                 tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
 
+                                sh "ls -l"
+                                sh "cd ${env.PROJECT} && ls -l"
+
                                 archiveArtifacts artifacts: '${env.PROJECT}/*.tar.gz',
                                 allowEmptyArchive: false,
                                 caseSensitive: true
