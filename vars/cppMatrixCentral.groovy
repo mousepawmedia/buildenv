@@ -67,8 +67,7 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
-                                sh "cd ${env.PROJECT}"
-                                sh "ls -l"
+                                sh "cd ./${env.PROJECT} && pwd"
                                 // if libdeps is being build Opus has to be reconfigured.
                                 script {
                                     if (env.PROJECT == "libdeps") {
