@@ -62,13 +62,9 @@ def call(Map pipelineParams) {
                             }
                         }
                         stage('Build') {
-                            options {
-                                script {
-                                    if (env.PROJECT != "libdeps") {
-                                        timeout(time: 3, unit: "MINUTES", activity: true)
-                                    }
-                                }
-                            }
+                            // options {
+                            //     timeout(time: 3, unit: "MINUTES", activity: true)
+                            // }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
                                 // if libdeps is being build Opus has to be reconfigured.
