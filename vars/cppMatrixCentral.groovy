@@ -4,7 +4,7 @@ def call(Map pipelineParams) {
         parameters {
             string(name: 'BRANCH', defaultValue: 'devel')
             string(name: 'PHID', defaultValue: '')
-            choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
+            choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal'], description: 'Run on specific platform.')
         }
         environment {
             PROJECT = "${pipelineParams.project}"
@@ -63,7 +63,7 @@ def call(Map pipelineParams) {
                         }
                         stage('Build') {
                             options {
-                                timeout(time: 10, unit: "MINUTES", activity: true)
+                                timeout(time: 60, unit: "MINUTES", activity: true)
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
