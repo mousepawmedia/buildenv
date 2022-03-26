@@ -61,6 +61,21 @@ def call(Map pipelineParams) {
                                     sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
                             }
                         }
+                        stage('Unarchive') {
+                            steps {
+                                script {
+                                    if (env.PROJECT == "iosqueak") {
+                                        echo 'Unarchiving dependencies needed...'
+                                        
+                                        unarchive mapping: ["my-artifacts-pattern/": 'arctic-tern, libdeps']
+
+                                        sh 'tar -xzvf *.tar.gz'
+                                    } else {
+                                        echo 'This project does not have dependencies to unarchive'
+                                    }
+                                }
+                            }
+                        }
                         stage('Build') {
                             options {
                                 timeout(time: 60, unit: "MINUTES", activity: true)
@@ -80,8 +95,15 @@ def call(Map pipelineParams) {
                         }
                         stage('Archive') {
                             steps {
-                                sh "cd ${env.PROJECT} && \
-                                tar -czvf ${env.PROJECT}.tar.gz ./${env.PROJECT}"
+                                script {
+                                    if (env.PROJECT == "libdeps") {
+                                        sh "cd ${env.PROJECT} && \
+                                        tar -czvf ${env.PROJECT}.tar.gz ${env.PROJECT}/libs"
+                                    } else {
+                                        sh "cd ${env.PROJECT} && \
+                                        tar -czvf ${env.PROJECT}.tar.gz ${env.PROJECT}/${env.PROJECT}"
+                                    }
+                                }
 
                                 archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
                                 allowEmptyArchive: false,
