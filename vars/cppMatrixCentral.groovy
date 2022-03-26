@@ -98,10 +98,10 @@ def call(Map pipelineParams) {
                                 script {
                                     if (env.PROJECT == "libdeps") {
                                         sh "cd ${env.PROJECT} && \
-                                        tar -czvf ${env.PROJECT}.tar.gz ${env.PROJECT}/libs"
+                                        tar -czvf ${env.PROJECT}.tar.gz libs --transform 's,^,${env.PROJECT}/,'"
                                     } else {
                                         sh "cd ${env.PROJECT} && \
-                                        tar -czvf ${env.PROJECT}.tar.gz ${env.PROJECT}/${env.PROJECT}"
+                                        tar -czvf ${env.PROJECT}.tar.gz ${env.PROJECT} --transform 's,^,${env.PROJECT}/,'"
                                     }
                                 }
 
