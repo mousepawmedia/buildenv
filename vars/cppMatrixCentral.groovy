@@ -78,7 +78,7 @@ def call(Map pipelineParams) {
                         }
                         stage('Build') {
                             options {
-                                timeout(time: 60, unit: "MINUTES", activity: true)
+                                timeout(time: 3, unit: "MINUTES", activity: true)
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
