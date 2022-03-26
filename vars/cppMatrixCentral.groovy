@@ -67,7 +67,7 @@ def call(Map pipelineParams) {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
                                         
-                                        unarchive mapping: ["jenkins/": 'arctic-tern, libdeps']
+                                        unarchive mapping: ["mpm-artifacts/": 'arctic-tern, libdeps']
 
                                         sh 'tar -xzvf *.tar.gz'
                                     } else {
