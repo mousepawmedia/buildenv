@@ -67,7 +67,7 @@ def call(Map pipelineParams) {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
                                         
-                                        unarchive mapping: ["job/": 'arctic-tern (central)/lastSuccessfulBuild/artifact, libdeps (central)/lastSuccessfulBuild/artifact']
+                                        unarchive mapping: ["mpm-artifacts.us-east-1.linodeobjects.com/jenkins/": 'arctic-tern%20%28central%29/lastSuccessfulBuild/artifacts/arctic-tern.tar.gz, libdeps%20%28central%29/lastSuccessfulBuild/artifacts/libdeps.tar.gz']
 
                                         sh 'tar -xzvf *.tar.gz'
                                     } else {
@@ -107,7 +107,8 @@ def call(Map pipelineParams) {
 
                                 archiveArtifacts artifacts: "${env.PROJECT}/*.tar.gz",
                                 allowEmptyArchive: false,
-                                caseSensitive: true
+                                caseSensitive: true,
+                                onlyIfSuccessful: true
                             }
                         }
                         stage('Report') {
