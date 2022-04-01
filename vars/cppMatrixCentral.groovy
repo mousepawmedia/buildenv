@@ -67,7 +67,8 @@ def call(Map pipelineParams) {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
                                         
-                                        unarchive mapping: ["mpm-artifacts.us-east-1.linodeobjects.com/jenkins/": 'arctic-tern%20%28central%29/4/artifacts/arctic-tern.tar.gz, libdeps%20%28central%29/84/artifacts/libdeps.tar.gz']
+                                        unarchive mapping: ["mpm-artifacts.us-east-1.linodeobjects.com/jenkins/arctic-tern%20%28central%29/4/artifacts/": 'arctic-tern.tar.gz']
+                                        unarchive mapping: ["mpm-artifacts.us-east-1.linodeobjects.com/jenkins/libdeps%20%28central%29/84/artifacts/": 'libdeps.tar.gz']
 
                                         sh 'tar -xzvf *.tar.gz'
                                     } else {
