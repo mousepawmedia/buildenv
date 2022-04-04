@@ -66,6 +66,8 @@ def call(Map pipelineParams) {
                                 script {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
+
+                                        sh 'pwd'
                                         
                                         unarchive mapping: ["mpm-artifacts/jenkins/arctic-tern_central/1/artifacts/*": "workspace/${OS}/${COMPILER}"]
 
