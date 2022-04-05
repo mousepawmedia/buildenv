@@ -69,7 +69,7 @@ def call(Map pipelineParams) {
 
                                         sh 'pwd'
                                         
-                                        unarchive mapping: ["/artifacts/arctic-tern": "/workspace/${OS}/${COMPILER}"]
+                                        unarchive mapping: ["artifacts/arctic-tern": "workspace/${OS}/${COMPILER}"]
 
                                         sh 'tar -xzvf *.tar.gz'
                                     } else {
