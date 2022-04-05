@@ -70,7 +70,7 @@ def call(Map pipelineParams) {
                                         sh 'rm -r -f arctic-tern'
                                         
                                         copyArtifacts projectName: 'arctic-tern_central'
-                                        target: "workspace/${OS}/${COMPILER}l"
+                                        target: "workspace/${OS}/${COMPILER}"
 
                                         sh 'cd arctic-tern && ls -l'
 
