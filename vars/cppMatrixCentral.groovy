@@ -68,9 +68,9 @@ def call(Map pipelineParams) {
                                         echo 'Unarchiving dependencies needed...'
                                         
                                         copyArtifacts projectName: 'arctic-tern_central'
-                                        target: "workspace/${OS}/${COMPILER}"
+                                        target: "workspace/${OS}/${COMPILER}/arctic-tern_central"
 
-                                        sh 'cd arctic-tern && ls -l'
+                                        sh 'cd arctic-tern_central && ls -l'
 
                                         // sh 'tar -xzvf *.tar.gz'
                                     } else {
