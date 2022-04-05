@@ -71,8 +71,15 @@ def call(Map pipelineParams) {
                                         copyArtifacts projectName: 'arctic-tern_central'
                                         target: "workspace/${OS}/${COMPILER}"
 
+                                        copyArtifacts projectName: 'libdeps_central'
+                                        target: "workspace/${OS}/${COMPILER}"
+
                                         sh 'cd arctic-tern && \
                                             tar -xzvf *.tar.gz'
+
+                                        sh 'cd libdeps && \
+                                            tar -xzvf *.tar.gz'
+
                                     } else {
                                         echo 'This project does not have dependencies to unarchive'
                                     }
