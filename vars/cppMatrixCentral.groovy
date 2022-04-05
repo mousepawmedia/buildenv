@@ -67,14 +67,12 @@ def call(Map pipelineParams) {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
 
-                                        sh 'rm -r -f arctic-tern'
-                                        
+                                        // Copy artifacts from last succesful build
                                         copyArtifacts projectName: 'arctic-tern_central'
                                         target: "workspace/${OS}/${COMPILER}"
 
-                                        sh 'cd arctic-tern && ls -l'
-
-                                        // sh 'tar -xzvf *.tar.gz'
+                                        sh 'cd arctic-tern && \
+                                            tar -xzvf *.tar.gz'
                                     } else {
                                         echo 'This project does not have dependencies to unarchive'
                                     }
@@ -102,11 +100,14 @@ def call(Map pipelineParams) {
                             steps {
                                 script {
                                     if (env.PROJECT == "libdeps") {
+                                        // sh "cd ${env.PROJECT} && \
+                                        // tar -czvf ${env.PROJECT}.tar.gz libs --transform 's,^,${env.PROJECT}/,'"
+
                                         sh "cd ${env.PROJECT} && \
-                                        tar -czvf ${env.PROJECT}.tar.gz libs --transform 's,^,${env.PROJECT}/,'"
+                                        tar -czvf ${env.PROJECT}.tar.gz libs"
                                     } else {
                                         sh "cd ${env.PROJECT} && \
-                                        tar -czvf ${env.PROJECT}.tar.gz ${env.PROJECT} --transform 's,^,${env.PROJECT}/,'"
+                                        tar -czvf ${env.PROJECT}.tar.gz ${env.PROJECT}"
                                     }
                                 }
 
@@ -114,6 +115,11 @@ def call(Map pipelineParams) {
                                 allowEmptyArchive: false,
                                 caseSensitive: true,
                                 onlyIfSuccessful: true
+                            }
+                        }
+                        stage('Clean workspace') {
+                            steps {
+                                sh 'rm -r -f *'
                             }
                         }
                         stage('Report') {
