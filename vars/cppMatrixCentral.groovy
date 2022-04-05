@@ -61,13 +61,14 @@ def call(Map pipelineParams) {
                                     sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
                             }
                         }
-                        stage('Unarchive') {
+                        stage('Copy Archive') {
                             steps {
                                 script {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
                                         
                                         copyArtifacts projectName: 'arctic-tern_central'
+                                        target: "workspace/${OS}/${COMPILER}"
 
                                         sh 'ls -l'
 
