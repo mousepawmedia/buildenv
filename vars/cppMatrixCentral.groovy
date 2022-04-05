@@ -66,11 +66,13 @@ def call(Map pipelineParams) {
                                 script {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
+
+                                        sh 'rm -r -f arctic-tern'
                                         
                                         copyArtifacts projectName: 'arctic-tern_central'
-                                        target: "workspace/${OS}/${COMPILER}/arctic-tern_central"
+                                        target: "workspace/${OS}/${COMPILER}l"
 
-                                        sh 'cd arctic-tern_central && ls -l'
+                                        sh 'cd arctic-tern && ls -l'
 
                                         // sh 'tar -xzvf *.tar.gz'
                                     } else {
