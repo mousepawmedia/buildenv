@@ -67,7 +67,7 @@ def call(Map pipelineParams) {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
 
-                                        def deps = ['arctic-tern', 'libdeps']
+                                        def deps = ['libdeps', 'arctic-tern']
 
                                         for (int i = 0; i < deps.size(); ++i) {
                                             // Copy artifacts from last succesful build
