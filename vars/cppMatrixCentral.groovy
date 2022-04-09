@@ -67,18 +67,16 @@ def call(Map pipelineParams) {
                                     if (env.PROJECT == "iosqueak") {
                                         echo 'Unarchiving dependencies needed...'
 
-                                        // Copy artifacts from last succesful build
-                                        copyArtifacts projectName: 'arctic-tern_central'
-                                        target: "workspace/${OS}/${COMPILER}"
+                                        def deps = ['arctic-tern', 'libdeps']
 
-                                        copyArtifacts projectName: 'libdeps_central'
-                                        target: "workspace/${OS}/${COMPILER}"
+                                        for (int i = 0; i < deps.size(); ++i) {
+                                            // Copy artifacts from last succesful build
+                                            copyArtifacts projectName: "${deps[i]}_central"
+                                            target: "workspace/${OS}/${COMPILER}"
 
-                                        sh 'cd arctic-tern && \
-                                            tar -xzvf *.tar.gz'
-
-                                        sh 'cd libdeps && \
-                                            tar -xzvf *.tar.gz'
+                                            sh "cd ${deps[i]} && \
+                                            tar -xzvf *.tar.gz"
+                                        }
 
                                     } else {
                                         echo 'This project does not have dependencies to unarchive'
