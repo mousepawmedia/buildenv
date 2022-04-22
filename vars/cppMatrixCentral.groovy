@@ -74,9 +74,12 @@ def call(Map pipelineParams) {
                                         def deps_str = sh(script: "cat ${env.PROJECT}/dependencies_central.txt", returnStdout: true)
 
                                         // convert deps_str to an array
-                                        def deps_arr = deps_str.split(',')
+                                        def deps_arr = deps_str.trim().split(',')
 
                                         for (int i = 0; i < deps_arr.size(); ++i) {
+
+                                            println(deps_arr[i].trim())
+
                                             // Copy artifacts from last succesful build
                                             copyArtifacts projectName: "${deps_arr[i]}_central"
                                             target: "workspace/${OS}/${COMPILER}"
