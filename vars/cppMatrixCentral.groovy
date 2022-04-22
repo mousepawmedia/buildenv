@@ -64,10 +64,10 @@ def call(Map pipelineParams) {
                         stage('Copy Archive') {
                             steps {
                                 script {
-                                    // if true returns 1 otherwise return 0
-                                    def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies_central.txt && echo 1 || echo 0", returnStdout: true)
+                                    // if true return string true otherwise return empty string
+                                    def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies_central.txt && echo true || echo  ", returnStdout: true)
 
-                                    if (containsDeps == "1") {
+                                    if (containsDeps) {
                                         echo 'Unarchiving dependencies needed...'
 
                                         def deps_str = sh(script: 'cat dependencies_central.txt', returnStdout: true)
@@ -83,7 +83,7 @@ def call(Map pipelineParams) {
                                             tar -xzvf *.tar.gz"
                                         }
 
-                                    } else if (containsDeps == "0") {
+                                    } else {
                                         echo 'This project does not have dependencies to unarchive'
                                     }
                                 }
