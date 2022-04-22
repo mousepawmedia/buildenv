@@ -67,7 +67,7 @@ def call(Map pipelineParams) {
 
                                     def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies_central.txt && echo true", returnStdout: true)
 
-                                    if (containsDeps == 'true') {
+                                    if (containsDeps == true) {
                                         echo 'Unarchiving dependencies needed...'
 
                                         def deps_str = sh(script: 'cat dependencies_central.txt', returnStdout: true)
