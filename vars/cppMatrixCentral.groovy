@@ -64,19 +64,21 @@ def call(Map pipelineParams) {
                         stage('Copy Archive') {
                             steps {
                                 script {
-                                    // if true return string true otherwise return empty string
+                                    // check if file exists
                                     def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies_central.txt && echo true || echo false", returnStdout: true)
 
                                     if (containsDeps.contains('true')) {
                                         echo 'Unarchiving dependencies needed...'
 
+                                        // read file content to store it on a variable
                                         def deps_str = sh(script: "cat ${env.PROJECT}/dependencies_central.txt", returnStdout: true)
 
+                                        // convert deps_str to an array
                                         def deps_arr = deps_str.split(',')
 
                                         for (int i = 0; i < deps_arr.size(); ++i) {
                                             // Copy artifacts from last succesful build
-                                            copyArtifacts projectName: "${deps[i]}_central"
+                                            copyArtifacts projectName: "${deps_arr[i]}_central"
                                             target: "workspace/${OS}/${COMPILER}"
 
                                             sh "cd ${deps_arr[i]} && \
@@ -95,6 +97,7 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
+
                                 // if libdeps is being built Opus has to be reconfigured.
                                 script {
                                     if (env.PROJECT == "libdeps") {
@@ -102,6 +105,7 @@ def call(Map pipelineParams) {
                                             make ubuntu-fix-aclocal"
                                     }
                                 }
+
                                 sh "cd ${env.PROJECT} && make ready"
                                 sh "${env.SHELL_AFTER}"
                             }
