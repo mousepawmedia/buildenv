@@ -65,12 +65,12 @@ def call(Map pipelineParams) {
                             steps {
                                 script {
                                     // if true return string true otherwise return empty string
-                                    def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies_central.txt && echo true || echo  ", returnStdout: true)
+                                    def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies_central.txt && echo true || echo false", returnStdout: true)
 
-                                    if (containsDeps) {
+                                    if (containsDeps.contains('true')) {
                                         echo 'Unarchiving dependencies needed...'
 
-                                        def deps_str = sh(script: 'cat dependencies_central.txt', returnStdout: true)
+                                        def deps_str = sh(script: "cat ${env.PROJECT}/dependencies_central.txt", returnStdout: true)
 
                                         def deps_arr = deps_str.split(',')
 
@@ -83,7 +83,7 @@ def call(Map pipelineParams) {
                                             tar -xzvf *.tar.gz"
                                         }
 
-                                    } else {
+                                    } else if (containsDeps.contains('false')){
                                         echo 'This project does not have dependencies to unarchive'
                                     }
                                 }
