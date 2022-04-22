@@ -64,17 +64,22 @@ def call(Map pipelineParams) {
                         stage('Copy Archive') {
                             steps {
                                 script {
-                                    if (env.PROJECT == "iosqueak") {
+
+                                    def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies_central.txt && echo 'true'", returnStdout: true)
+
+                                    if (containsDeps == "true") {
                                         echo 'Unarchiving dependencies needed...'
 
-                                        def deps = ['libdeps', 'arctic-tern']
+                                        def deps_str = sh(script: 'cat dependencies_central.txt', returnStdout: true)
 
-                                        for (int i = 0; i < deps.size(); ++i) {
+                                        def deps_arr = deps_str.split(',')
+
+                                        for (int i = 0; i < deps_arr.size(); ++i) {
                                             // Copy artifacts from last succesful build
                                             copyArtifacts projectName: "${deps[i]}_central"
                                             target: "workspace/${OS}/${COMPILER}"
 
-                                            sh "cd ${deps[i]} && \
+                                            sh "cd ${deps_arr[i]} && \
                                             tar -xzvf *.tar.gz"
                                         }
 
@@ -90,7 +95,7 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "${env.SHELL_BEFORE}"
-                                // if libdeps is being build Opus has to be reconfigured.
+                                // if libdeps is being built Opus has to be reconfigured.
                                 script {
                                     if (env.PROJECT == "libdeps") {
                                         sh "cd ${env.PROJECT} && \
