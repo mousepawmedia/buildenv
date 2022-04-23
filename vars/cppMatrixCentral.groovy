@@ -77,10 +77,7 @@ def call(Map pipelineParams) {
                                         def deps_arr = deps_str.trim().split(',')
 
                                         for (int i = 0; i < deps_arr.size(); ++i) {
-
-                                            println(deps_arr[i].trim())
-
-                                            // Copy artifacts from last succesful build
+                                            // copy artifacts from last succesful build
                                             copyArtifacts projectName: "${deps_arr[i]}_central"
                                             target: "workspace/${OS}/${COMPILER}"
 
@@ -88,7 +85,9 @@ def call(Map pipelineParams) {
                                             tar -xzvf *.tar.gz"
                                         }
 
-                                    } else if (containsDeps.contains('false')){
+                                    }
+                                    
+                                    if (containsDeps.contains('false')) {
                                         echo 'This project does not have dependencies to unarchive'
                                     }
                                 }
@@ -99,27 +98,30 @@ def call(Map pipelineParams) {
                                 timeout(time: 240, unit: "MINUTES", activity: true)
                             }
                             steps {
-                                sh "${env.SHELL_BEFORE}"
-
-                                // if libdeps is being built Opus has to be reconfigured.
                                 script {
-                                    if (env.PROJECT == "libdeps") {
+                                    sh "${env.SHELL_BEFORE}"
+
+                                    // if libdeps is being built Opus has to be reconfigured
+                                    if (env.PROJECT == 'libdeps') {
                                         sh "cd ${env.PROJECT} && \
                                             make ubuntu-fix-aclocal"
                                     }
-                                }
 
-                                sh "cd ${env.PROJECT} && make ready"
-                                sh "${env.SHELL_AFTER}"
+                                    // goldilocks must be built from stable branch
+                                    if (env.PROJECT == 'goldilocks') {
+                                        sh "cd ${env.PROJECT} && \
+                                            git checkout stable"
+                                    }
+                                    
+                                    sh "cd ${env.PROJECT} && make ready"
+                                    sh "${env.SHELL_AFTER}"
+                                }
                             }
                         }
                         stage('Archive') {
                             steps {
                                 script {
                                     if (env.PROJECT == "libdeps") {
-                                        // sh "cd ${env.PROJECT} && \
-                                        // tar -czvf ${env.PROJECT}.tar.gz libs --transform 's,^,${env.PROJECT}/,'"
-
                                         sh "cd ${env.PROJECT} && \
                                         tar -czvf ${env.PROJECT}.tar.gz libs"
                                     } else {
