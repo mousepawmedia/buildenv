@@ -101,11 +101,6 @@ def call(Map pipelineParams) {
                                 script {
                                     sh "${env.SHELL_BEFORE}"
 
-                                    // creating swap memory
-                                    sh 'sudo dd if=/dev/zero of=/swapfile bs=64M count=16'
-                                    sh 'sudo mkswap /swapfile'
-                                    sh 'sudo swapon /swapfile'
-
                                     // if libdeps is being built Opus has to be reconfigured
                                     if (env.PROJECT == 'libdeps') {
                                         sh "cd ${env.PROJECT} && \
@@ -119,10 +114,6 @@ def call(Map pipelineParams) {
                                     }
                                     
                                     sh "cd ${env.PROJECT} && make ready"
-
-                                    // deleting changes
-                                    sh 'sudo swapoff /swapfile'
-                                    sh 'sudo rm /swapfile'
 
                                     sh "${env.SHELL_AFTER}"
                                 }
