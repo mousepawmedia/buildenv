@@ -17,37 +17,6 @@ def call(Map pipelineParams) {
         agent any
 
         stages {
-            stage('Copy Archive') {
-                steps {
-                    script {
-                        // check if file exists
-                        def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies.txt && echo true || echo false", returnStdout: true)
-
-                        if (containsDeps.contains('true')) {
-                            echo 'Unarchiving dependencies needed...'
-
-                            // read file content to store it on a variable
-                            def deps_str = sh(script: "cat ${env.PROJECT}/dependencies.txt", returnStdout: true)
-
-                            // convert deps_str to an array
-                            def deps_arr = deps_str.trim().split(',')
-
-                            for (int i = 0; i < deps_arr.size(); ++i) {
-                                // copy artifacts from last succesful build
-                                copyArtifacts projectName: "${deps_arr[i]}_central"
-                                target: "workspace/${OS}/${COMPILER}"
-
-                                sh "cd ${deps_arr[i]} && \
-                                tar -xzvf *.tar.gz"
-                            }
-                        }
-                                    
-                        if (containsDeps.contains('false')) {
-                            echo 'This project does not have dependencies to unarchive'
-                        }
-                    }
-                }
-            }
             stage('Canary') {
                 agent {
                     /* The canary build, will use Focal/Clang. This must be
@@ -62,17 +31,61 @@ def call(Map pipelineParams) {
                 options {
                     timeout(time: 3, unit: "MINUTES", activity: true)
                 }
-                steps {
-                    checkoutStep(
-                        'repo': env.REPO,
-                        'branch': params.BRANCH,
-                        'directory': 'target',
-                        'diff_id': params.DIFF_ID
-                    )
-                    sh "${env.SHELL_BEFORE}"
-                    sh "cd target && \
-                        make tester_debug"
-                    sh "${env.SHELL_AFTER}"
+                stages {
+                    stage('Checkout') {
+                        steps {
+                            checkoutStep(
+                                'repo': env.REPO,
+                                'branch': params.BRANCH,
+                                'directory': 'target',
+                                'diff_id': params.DIFF_ID
+                            )
+                        }
+                    }
+                    stage('Copy Archive') {
+                        steps {
+                            script {
+                                // check if file exists
+                                def containsDeps = sh(script: "test -f target/dependencies.txt && echo true || echo false", returnStdout: true)
+
+                                if (containsDeps.contains('true')) {
+                                    echo 'Unarchiving dependencies needed...'
+
+                                    // read file content to store it on a variable
+                                    def deps_str = sh(script: "cat target/dependencies.txt", returnStdout: true)
+
+                                    // convert deps_str to an array
+                                    def deps_arr = deps_str.trim().split(',')
+
+                                    for (int i = 0; i < deps_arr.size(); ++i) {
+                                        // copy artifacts from last succesful build
+                                        copyArtifacts projectName: "${deps_arr[i]}_central"
+                                        target: "workspace/focal/clang"
+
+                                        sh "cd ${deps_arr[i]} && \
+                                            tar -xzvf *.tar.gz"
+                                    }
+                                }
+                                        
+                                if (containsDeps.contains('false')) {
+                                    echo 'This project does not have dependencies to unarchive'
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('Build') {
+                    steps {
+                        sh "${env.SHELL_BEFORE}"
+                        sh "cd target && \
+                            make tester_debug"
+                        sh "${env.SHELL_AFTER}"
+                    }
+                }
+                stage('Clean workspace') {
+                    steps {
+                        sh 'rm -r -f *'
+                    }
                 }
             }
             stage('Matrix') {
@@ -122,6 +135,37 @@ def call(Map pipelineParams) {
                             steps {
                                 sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
                                 sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
+                            }
+                        }
+                        stage('Copy Archive') {
+                            steps {
+                                script {
+                                    // check if file exists
+                                    def containsDeps = sh(script: "test -f target/dependencies.txt && echo true || echo false", returnStdout: true)
+
+                                    if (containsDeps.contains('true')) {
+                                        echo 'Unarchiving dependencies needed...'
+
+                                        // read file content to store it on a variable
+                                        def deps_str = sh(script: "cat target/dependencies.txt", returnStdout: true)
+
+                                        // convert deps_str to an array
+                                        def deps_arr = deps_str.trim().split(',')
+
+                                        for (int i = 0; i < deps_arr.size(); ++i) {
+                                            // copy artifacts from last succesful build
+                                            copyArtifacts projectName: "${deps_arr[i]}_central"
+                                            target: "workspace/${OS}/${COMPILER}"
+
+                                            sh "cd ${deps_arr[i]} && \
+                                                tar -xzvf *.tar.gz"
+                                        }
+                                    }
+                                            
+                                    if (containsDeps.contains('false')) {
+                                        echo 'This project does not have dependencies to unarchive'
+                                    }
+                                }
                             }
                         }
                         stage('Build') {
