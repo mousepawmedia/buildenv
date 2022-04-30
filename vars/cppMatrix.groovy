@@ -56,7 +56,7 @@ def call(Map pipelineParams) {
                      */
                     node {
                         label "mpm-focal"
-                        customWorkspace "/matrix/compiler/clang/label/mpm-focal/"
+                        customWorkspace "/workspace/focal/clang"
                     }
                 }
                 options {
@@ -80,17 +80,19 @@ def call(Map pipelineParams) {
                     agent {
                         node {
                             label "mpm-${env.OS}"
-                            customWorkspace "matrix/compiler/${env.COMPILER}/label/mpm-${env.OS}/"
+                            customWorkspace "/workspace/${OS}/${COMPILER}"
                         }
                     }
-                    when { anyOf {
-                        expression { params.OS_FILTER == 'all' }
-                        expression { params.OS_FILTER == env.OS }
-                    } }
+                    when { 
+                        anyOf {
+                            expression { params.OS_FILTER == 'all' }
+                            expression { params.OS_FILTER == env.OS }
+                        } 
+                    }
                     axes {
                         axis {
                             name 'OS'
-                            values 'bionic', 'focal', 'hirsute'
+                            values 'focal'
                         }
                         axis {
                             name 'COMPILER'
