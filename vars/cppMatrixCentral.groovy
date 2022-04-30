@@ -33,7 +33,7 @@ def call(Map pipelineParams) {
                     axes {
                         axis {
                             name 'OS'
-                            values 'bionic', 'focal'
+                            values 'focal'
                         }
                         axis {
                             name 'COMPILER'
@@ -84,7 +84,6 @@ def call(Map pipelineParams) {
                                             sh "cd ${deps_arr[i]} && \
                                             tar -xzvf *.tar.gz"
                                         }
-
                                     }
                                     
                                     if (containsDeps.contains('false')) {
