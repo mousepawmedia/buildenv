@@ -28,9 +28,6 @@ def call(Map pipelineParams) {
                         customWorkspace "/workspace/focal/clang"
                     }
                 }
-                options {
-                    timeout(time: 3, unit: "MINUTES", activity: true)
-                }
                 stages {
                     stage('Checkout') {
                         steps {
@@ -73,18 +70,21 @@ def call(Map pipelineParams) {
                             }
                         }
                     }
-                }
-                stage('Build') {
-                    steps {
-                        sh "${env.SHELL_BEFORE}"
-                        sh "cd target && \
-                            make tester_debug"
-                        sh "${env.SHELL_AFTER}"
+                    stage('Build') {
+                        options {
+                            timeout(time: 3, unit: "MINUTES", activity: true)
+                        }
+                        steps {
+                            sh "${env.SHELL_BEFORE}"
+                            sh "cd target && \
+                                make tester_debug"
+                            sh "${env.SHELL_AFTER}"
+                        }
                     }
-                }
-                stage('Clean workspace') {
-                    steps {
-                        sh 'rm -r -f *'
+                    stage('Clean workspace') {
+                        steps {
+                            sh 'rm -r -f *'
+                        }
                     }
                 }
             }
