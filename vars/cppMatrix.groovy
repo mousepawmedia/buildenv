@@ -5,7 +5,7 @@ def call(Map pipelineParams) {
             string(name: 'BRANCH', defaultValue: 'devel')
             string(name: 'PHID', defaultValue: '')
             string(name: 'DIFF_ID', defaultValue: '')
-            choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
+            choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal'], description: 'Run on specific platform.')
         }
         environment {
             PROJECT = "${pipelineParams.project}"
@@ -17,27 +17,33 @@ def call(Map pipelineParams) {
         agent any
 
         stages {
-            stage('Unarchive') {
+            stage('Copy Archive') {
                 steps {
                     script {
-                        def archives = [env.PROJECT]
-                        archives += pipelineParams.dependencies
-                        def archivesStr = ""
+                        // check if file exists
+                        def containsDeps = sh(script: "test -f ${env.PROJECT}/dependencies.txt && echo true || echo false", returnStdout: true)
 
-                        // Appending the arr values to a string.
-                        for(int i = 0; i < archives.size(); ++i) {
-                            if (archives.size() - 1 == i) {
-                                archivesStr += archives[i] + ".tar.gz"
-                            } else {
-                                archivesStr += archives[i] + ".tar.gz, "
+                        if (containsDeps.contains('true')) {
+                            echo 'Unarchiving dependencies needed...'
+
+                            // read file content to store it on a variable
+                            def deps_str = sh(script: "cat ${env.PROJECT}/dependencies.txt", returnStdout: true)
+
+                            // convert deps_str to an array
+                            def deps_arr = deps_str.trim().split(',')
+
+                            for (int i = 0; i < deps_arr.size(); ++i) {
+                                // copy artifacts from last succesful build
+                                copyArtifacts projectName: "${deps_arr[i]}_central"
+                                target: "workspace/${OS}/${COMPILER}"
+
+                                sh "cd ${deps_arr[i]} && \
+                                tar -xzvf *.tar.gz"
                             }
                         }
-
-                        unarchive mapping: ["mpm-artifacts/": "${archivesStr}"]
-                        
-                        // Extracting .tar files.
-                        for(int i = 0; i < archives.size(); ++i) {
-                            sh "tar -xzvf ${archives[i]}.tar.gz"
+                                    
+                        if (containsDeps.contains('false')) {
+                            echo 'This project does not have dependencies to unarchive'
                         }
                     }
                 }
