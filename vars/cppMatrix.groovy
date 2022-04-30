@@ -162,6 +162,11 @@ def call(Map pipelineParams) {
                                 valgrind --leak-check=full --errors-for-leak-kinds=all --error-exitcode=1 ./${env.RUN_WHAT} --runall"
                             }
                         }
+                        stage('Clean workspace') {
+                            steps {
+                                sh 'rm -r -f *'
+                            }
+                        }
                         stage('Report') {
                             // If a Phabricator PHID was provided...
                             when { not {
