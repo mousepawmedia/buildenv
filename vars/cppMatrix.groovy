@@ -72,7 +72,7 @@ def call(Map pipelineParams) {
                     }
                     stage('Build') {
                         options {
-                            timeout(time: 3, unit: "MINUTES", activity: true)
+                            timeout(time: 240, unit: "MINUTES", activity: true)
                         }
                         steps {
                             sh "${env.SHELL_BEFORE}"
@@ -170,7 +170,7 @@ def call(Map pipelineParams) {
                         }
                         stage('Build') {
                             options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
+                                timeout(time: 240, unit: "MINUTES", activity: true)
                             }
                             environment {
                                 MAKE_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
@@ -184,7 +184,7 @@ def call(Map pipelineParams) {
                         }
                         stage('Test') {
                             options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
+                                timeout(time: 240, unit: "MINUTES", activity: true)
                             }
                             environment {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
@@ -196,7 +196,7 @@ def call(Map pipelineParams) {
                         }
                         stage('Valgrind') {
                             options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
+                                timeout(time: 240, unit: "MINUTES", activity: true)
                             }
                             environment {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
