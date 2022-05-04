@@ -33,7 +33,7 @@ def call(Map pipelineParams) {
                     axes {
                         axis {
                             name 'OS'
-                            values 'focal'
+                            values 'bionic', 'focal'
                         }
                         axis {
                             name 'COMPILER'
@@ -59,6 +59,14 @@ def call(Map pipelineParams) {
                             steps {
                                 sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
                                     sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
+
+                                // make gcc consume less resources
+                                script {
+                                    if (CC == 'gcc') {
+                                        sh "cd ${env.PROJECT} && \
+                                        cmake -DCMAKE_CXX_FLAGS=CFLAGS='--param ggc-min-expand=0 --param ggc-min-heapsize=524288'"
+                                    }
+                                }
                             }
                         }
                         stage('Copy Archive') {
