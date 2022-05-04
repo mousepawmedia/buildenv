@@ -64,7 +64,7 @@ def call(Map pipelineParams) {
                                 script {
                                     if (CC == 'gcc') {
                                         sh "cd ${env.PROJECT}/${env.PROJECT}-source && \
-                                        cmake -DCMAKE_CXX_FLAGS='--param ggc-min-expand=0 --param ggc-min-heapsize=524288'"
+                                        cmake -DCMAKE_CXX_FLAGS=CFLAGS='--param ggc-min-expand=0 --param ggc-min-heapsize=524288' -G 'Unix Makefiles' -DCMAKE_VERBOSE_MAKEFILE=ON"
                                     }
                                 }
                             }
