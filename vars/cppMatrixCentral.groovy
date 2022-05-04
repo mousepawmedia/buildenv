@@ -63,7 +63,7 @@ def call(Map pipelineParams) {
                                 // make gcc consume less resources
                                 script {
                                     if (CC == 'gcc') {
-                                        sh "cd ${env.PROJECT} && \
+                                        sh "cd ${env.PROJECT}/${env.PROJECT}-source && \
                                         cmake -DCMAKE_CXX_FLAGS=CFLAGS='--param ggc-min-expand=0 --param ggc-min-heapsize=524288'"
                                     }
                                 }
