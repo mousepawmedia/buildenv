@@ -60,13 +60,13 @@ def call(Map pipelineParams) {
                                 sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
                                     sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
 
-                                // make gcc consume less resources
-                                script {
-                                    if (CC == 'gcc') {
-                                        sh "cd ${env.PROJECT} && \
-                                        cmake ${env.PROJECT}-source/CMakelists.txt -DCMAKE_CXX_FLAGS=CFLAGS='--param ggc-min-expand=0 --param ggc-min-heapsize=524288' -DCMAKE_C_FLAGS='-O0 -DDEBUG ' -G 'Unix Makefiles' -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ."
-                                    }
-                                }
+                                // // make gcc consume less resources
+                                // script {
+                                //     if (CC == 'gcc') {
+                                //         sh "cd ${env.PROJECT} && \
+                                //         cmake ${env.PROJECT}-source/CMakelists.txt -DCMAKE_CXX_FLAGS=CFLAGS='--param ggc-min-expand=0 --param ggc-min-heapsize=524288' -DCMAKE_C_FLAGS='-O0 -DDEBUG ' -G 'Unix Makefiles' -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ."
+                                //     }
+                                // }
                             }
                         }
                         stage('Copy Archive') {
