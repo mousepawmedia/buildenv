@@ -176,10 +176,20 @@ def call(Map pipelineParams) {
                                 MAKE_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "${env.SHELL_BEFORE}"
-                                sh "cd target && \
-                                make ${env.MAKE_WHAT}"
-                                sh "${env.SHELL_AFTER}"
+                                script {  
+                                    sh "${env.SHELL_BEFORE}"
+
+                                    // goldilocks must be built from stable branch
+                                    if (env.PROJECT == 'goldilocks') {
+                                        sh "cd ${env.PROJECT} && \
+                                            git checkout stable"
+                                    }
+
+                                    sh "cd target && \
+                                        make ${env.MAKE_WHAT}"
+                                    
+                                    sh "${env.SHELL_AFTER}"
+                                }
                             }
                         }
                         stage('Test') {
