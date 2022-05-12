@@ -105,11 +105,11 @@ def call(Map pipelineParams) {
                     axes {
                         axis {
                             name 'OS'
-                            values 'focal'
+                            values 'bionic', 'focal'
                         }
                         axis {
                             name 'COMPILER'
-                            values 'clang', 'gcc'
+                            values 'clang'
                         }
                         axis {
                             name 'TARGET'
