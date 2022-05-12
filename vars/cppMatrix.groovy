@@ -5,7 +5,7 @@ def call(Map pipelineParams) {
             string(name: 'BRANCH', defaultValue: 'devel')
             string(name: 'PHID', defaultValue: '')
             string(name: 'DIFF_ID', defaultValue: '')
-            choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'hirsute'], description: 'Run on specific platform.')
+            choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal'], description: 'Run on specific platform.')
         }
         environment {
             PROJECT = "${pipelineParams.project}"
@@ -17,31 +17,6 @@ def call(Map pipelineParams) {
         agent any
 
         stages {
-            stage('Unarchive') {
-                steps {
-                    script {
-                        def archives = [env.PROJECT]
-                        archives += pipelineParams.dependencies
-                        def archivesStr = ""
-
-                        // Appending the arr values to a string.
-                        for(int i = 0; i < archives.size(); ++i) {
-                            if (archives.size() - 1 == i) {
-                                archivesStr += archives[i] + ".tar.gz"
-                            } else {
-                                archivesStr += archives[i] + ".tar.gz, "
-                            }
-                        }
-
-                        unarchive mapping: ["mpm-artifacts/": "${archivesStr}"]
-                        
-                        // Extracting .tar files.
-                        for(int i = 0; i < archives.size(); ++i) {
-                            sh "tar -xzvf ${archives[i]}.tar.gz"
-                        }
-                    }
-                }
-            }
             stage('Canary') {
                 agent {
                     /* The canary build, will use Focal/Clang. This must be
@@ -50,23 +25,76 @@ def call(Map pipelineParams) {
                      */
                     node {
                         label "mpm-focal"
-                        customWorkspace "/matrix/compiler/clang/label/mpm-focal/"
+                        customWorkspace "/workspace/focal/clang"
                     }
                 }
-                options {
-                    timeout(time: 3, unit: "MINUTES", activity: true)
-                }
-                steps {
-                    checkoutStep(
-                        'repo': env.REPO,
-                        'branch': params.BRANCH,
-                        'directory': 'target',
-                        'diff_id': params.DIFF_ID
-                    )
-                    sh "${env.SHELL_BEFORE}"
-                    sh "cd target && \
-                        make tester_debug"
-                    sh "${env.SHELL_AFTER}"
+                stages {
+                    stage('Checkout') {
+                        steps {
+                            checkoutStep(
+                                'repo': env.REPO,
+                                'branch': params.BRANCH,
+                                'directory': 'target',
+                                'diff_id': params.DIFF_ID
+                            )
+                        }
+                    }
+                    stage('Copy Archive') {
+                        steps {
+                            script {
+                                // check if file exists
+                                def containsDeps = sh(script: "test -f target/dependencies.txt && echo true || echo false", returnStdout: true)
+
+                                if (containsDeps.contains('true')) {
+                                    echo 'Unarchiving dependencies needed...'
+
+                                    // read file content to store it on a variable
+                                    def deps_str = sh(script: "cat target/dependencies.txt", returnStdout: true)
+
+                                    // convert deps_str to an array
+                                    def deps_arr = deps_str.trim().split(',')
+
+                                    for (int i = 0; i < deps_arr.size(); ++i) {
+                                        // copy artifacts from last succesful build
+                                        copyArtifacts projectName: "${deps_arr[i]}_central"
+                                        target: "workspace/focal/clang"
+
+                                        sh "cd ${deps_arr[i]} && \
+                                            tar -xzvf *.tar.gz"
+                                    }
+                                }
+                                        
+                                if (containsDeps.contains('false')) {
+                                    echo 'This project does not have dependencies to unarchive'
+                                }
+                            }
+                        }
+                    }
+                    stage('Build') {
+                        options {
+                            timeout(time: 240, unit: "MINUTES", activity: true)
+                        }
+                        steps {
+                            script {
+                                sh "${env.SHELL_BEFORE}"
+
+                                // goldilocks must be built from stable branch
+                                if (env.PROJECT == 'goldilocks') {
+                                    sh "cd target && git checkout stable"
+                                }
+
+                                sh "cd target && \
+                                make tester_debug"
+                                
+                                sh "${env.SHELL_AFTER}"
+                            }
+                        }
+                    }
+                    stage('Clean workspace') {
+                        steps {
+                            sh 'rm -r -f *'
+                        }
+                    }
                 }
             }
             stage('Matrix') {
@@ -74,21 +102,23 @@ def call(Map pipelineParams) {
                     agent {
                         node {
                             label "mpm-${env.OS}"
-                            customWorkspace "matrix/compiler/${env.COMPILER}/label/mpm-${env.OS}/"
+                            customWorkspace "/workspace/${OS}/${COMPILER}"
                         }
                     }
-                    when { anyOf {
-                        expression { params.OS_FILTER == 'all' }
-                        expression { params.OS_FILTER == env.OS }
-                    } }
+                    when { 
+                        anyOf {
+                            expression { params.OS_FILTER == 'all' }
+                            expression { params.OS_FILTER == env.OS }
+                        } 
+                    }
                     axes {
                         axis {
                             name 'OS'
-                            values 'bionic', 'focal', 'hirsute'
+                            values 'bionic', 'focal'
                         }
                         axis {
                             name 'COMPILER'
-                            values 'clang', 'gcc'
+                            values 'clang'
                         }
                         axis {
                             name 'TARGET'
@@ -116,23 +146,63 @@ def call(Map pipelineParams) {
                                 sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
                             }
                         }
+                        stage('Copy Archive') {
+                            steps {
+                                script {
+                                    // check if file exists
+                                    def containsDeps = sh(script: "test -f target/dependencies.txt && echo true || echo false", returnStdout: true)
+
+                                    if (containsDeps.contains('true')) {
+                                        echo 'Unarchiving dependencies needed...'
+
+                                        // read file content to store it on a variable
+                                        def deps_str = sh(script: "cat target/dependencies.txt", returnStdout: true)
+
+                                        // convert deps_str to an array
+                                        def deps_arr = deps_str.trim().split(',')
+
+                                        for (int i = 0; i < deps_arr.size(); ++i) {
+                                            // copy artifacts from last succesful build
+                                            copyArtifacts projectName: "${deps_arr[i]}_central"
+                                            target: "workspace/${OS}/${COMPILER}"
+
+                                            sh "cd ${deps_arr[i]} && \
+                                                tar -xzvf *.tar.gz"
+                                        }
+                                    }
+                                            
+                                    if (containsDeps.contains('false')) {
+                                        echo 'This project does not have dependencies to unarchive'
+                                    }
+                                }
+                            }
+                        }
                         stage('Build') {
                             options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
+                                timeout(time: 240, unit: "MINUTES", activity: true)
                             }
                             environment {
                                 MAKE_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "${env.SHELL_BEFORE}"
-                                sh "cd target && \
-                                make ${env.MAKE_WHAT}"
-                                sh "${env.SHELL_AFTER}"
+                                script {  
+                                    sh "${env.SHELL_BEFORE}"
+
+                                    // goldilocks must be built from stable branch
+                                    if (env.PROJECT == 'goldilocks') {
+                                        sh "cd target && git checkout stable"
+                                    }
+
+                                    sh "cd target && \
+                                        make ${env.MAKE_WHAT}"
+                                    
+                                    sh "${env.SHELL_AFTER}"
+                                }
                             }
                         }
                         stage('Test') {
                             options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
+                                timeout(time: 240, unit: "MINUTES", activity: true)
                             }
                             environment {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
@@ -144,7 +214,7 @@ def call(Map pipelineParams) {
                         }
                         stage('Valgrind') {
                             options {
-                                timeout(time: 3, unit: "MINUTES", activity: true)
+                                timeout(time: 240, unit: "MINUTES", activity: true)
                             }
                             environment {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
@@ -152,6 +222,11 @@ def call(Map pipelineParams) {
                             steps {
                                 sh "cd target && \
                                 valgrind --leak-check=full --errors-for-leak-kinds=all --error-exitcode=1 ./${env.RUN_WHAT} --runall"
+                            }
+                        }
+                        stage('Clean workspace') {
+                            steps {
+                                sh 'rm -r -f *'
                             }
                         }
                         stage('Report') {
