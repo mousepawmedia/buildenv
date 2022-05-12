@@ -75,10 +75,19 @@ def call(Map pipelineParams) {
                             timeout(time: 240, unit: "MINUTES", activity: true)
                         }
                         steps {
-                            sh "${env.SHELL_BEFORE}"
-                            sh "cd target && \
+                            script {
+                                sh "${env.SHELL_BEFORE}"
+
+                                // goldilocks must be built from stable branch
+                                if (env.PROJECT == 'goldilocks') {
+                                    sh "cd target && git checkout stable"
+                                }
+
+                                sh "cd target && \
                                 make tester_debug"
-                            sh "${env.SHELL_AFTER}"
+                                
+                                sh "${env.SHELL_AFTER}"
+                            }
                         }
                     }
                     stage('Clean workspace') {
