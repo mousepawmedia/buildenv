@@ -181,8 +181,7 @@ def call(Map pipelineParams) {
 
                                     // goldilocks must be built from stable branch
                                     if (env.PROJECT == 'goldilocks') {
-                                        sh "cd ${env.PROJECT} && \
-                                            git checkout stable"
+                                        sh "cd target && git checkout stable"
                                     }
 
                                     sh "cd target && \
