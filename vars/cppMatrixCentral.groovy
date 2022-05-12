@@ -37,7 +37,7 @@ def call(Map pipelineParams) {
                         }
                         axis {
                             name 'COMPILER'
-                            values 'clang', 'gcc'
+                            values 'clang'
                         }
                     }
                     stages {
