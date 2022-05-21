@@ -250,22 +250,26 @@ def call(Map pipelineParams) {
                     }
                 }
             }
-            stage('Final Report') {
-                // If a Phabricator PHID was provided...
-                when { not {
-                    expression { params.PHID == '' }
-                } }
-                steps {
-                    step([
-                        $class: 'PhabricatorNotifier',
-                        //commentFile: '.phabricator-comment',
-                        commentOnSuccess: true,
-                        commentSize: '1000',
-                        commentWithConsoleLinkOnFailure: true,
-                        customComment: false,
-                        preserveFormatting: false,
-                        sendPartialResults: false
-                    ])
+        }
+        post {
+            always {
+                stage('Final Report') {
+                    // If a Phabricator PHID was provided...
+                    when { not {
+                        expression { params.PHID == '' }
+                    } }
+                    steps {
+                        step([
+                            $class: 'PhabricatorNotifier',
+                            //commentFile: '.phabricator-comment',
+                            commentOnSuccess: true,
+                            commentSize: '1000',
+                            commentWithConsoleLinkOnFailure: true,
+                            customComment: false,
+                            preserveFormatting: false,
+                            sendPartialResults: false
+                        ])
+                    }
                 }
             }
         }

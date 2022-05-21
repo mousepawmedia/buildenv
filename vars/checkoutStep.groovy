@@ -14,6 +14,12 @@ def call(Map pipelineParams) {
             url: "${pipelineParams.repo}"
         ]]
     ])
+
     // Apply patch if specified
-    sh "${pipelineParams.diff_id == '' ? '' : 'cd ${pipelineParams.directory} && arc patch ${pipelineParams.diff_id}' }"
+    script {
+        if (pipelineParams.diff_id != '') {
+            sh "cd ${pipelineParams.directory} && \
+                arc patch ${pipelineParams.diff_id}"
+        }
+    }
 }
