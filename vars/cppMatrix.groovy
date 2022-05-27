@@ -255,9 +255,7 @@ def call(Map pipelineParams) {
             always {
                 stage('Final Report') {
                     // If a Phabricator PHID was provided...
-                    when { {
-                        expression { params.PHID != '' }
-                    } }
+                    when { expression { params.PHID != '' } }
                     steps {
                         step([
                             $class: 'PhabricatorNotifier',
