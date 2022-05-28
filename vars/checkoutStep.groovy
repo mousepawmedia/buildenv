@@ -17,9 +17,12 @@ def call(Map pipelineParams) {
 
     // Apply patch if specified
     script {
+
+        sh 'printenv'
+
         if (pipelineParams.diff_id != '') {
             sh "cd ${pipelineParams.directory} && \
-                arc patch D${env.DIFF_ID}"
+                arc patch ${pipelineParams.diff_id}"
         }
     }
 }
