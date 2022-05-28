@@ -18,7 +18,7 @@ def call(Map pipelineParams) {
     // Apply patch if specified
     script {
 
-        sh 'printenv'
+        echo PhabricatorPlugin.DIFFERENTIAL_ID_FIELD
 
         if (pipelineParams.diff_id != '') {
             sh "cd ${pipelineParams.directory} && \
