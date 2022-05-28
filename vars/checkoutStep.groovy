@@ -17,12 +17,13 @@ def call(Map pipelineParams) {
 
     // Apply patch if specified
     script {
-
-        echo PhabricatorPlugin.DIFFERENTIAL_ID_FIELD
-
         if (pipelineParams.diff_id != '') {
             sh "cd ${pipelineParams.directory} && \
                 arc patch ${pipelineParams.diff_id}"
         }
+
+        String patch = PhabricatorBuildWrapperDescriptor.getArcPath()
+
+        PhabricatorBuildWrapperDescriptor.setArcPath(patch)
     }
 }
