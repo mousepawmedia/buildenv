@@ -36,7 +36,7 @@ def call(Map pipelineParams) {
                                 'repo': env.REPO,
                                 'branch': params.BRANCH,
                                 'directory': 'target',
-                                'diff_id': params.DIFF_ID
+                                'diff_id': params.DIFF_ID,
                                 'revision_id': params.REVISION_ID
                             )
                         }
