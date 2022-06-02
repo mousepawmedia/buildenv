@@ -19,7 +19,7 @@ def call(Map pipelineParams) {
     script {
         if (pipelineParams.diff_id != '') {
             sh "cd ${pipelineParams.directory} && \
-                arc patch ${pipelineParams.REVISION_ID}"
+                arc patch D${pipelineParams.revision_id}"
         }
     }
 }
