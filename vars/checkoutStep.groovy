@@ -19,11 +19,7 @@ def call(Map pipelineParams) {
     script {
         if (pipelineParams.diff_id != '') {
             sh "cd ${pipelineParams.directory} && \
-                arc patch ${pipelineParams.diff_id}"
+                arc patch ${pipelineParams.REVISION_ID}"
         }
-
-        String patch = PhabricatorBuildWrapperDescriptor.getArcPath()
-
-        PhabricatorBuildWrapperDescriptor.setArcPath(patch)
     }
 }
