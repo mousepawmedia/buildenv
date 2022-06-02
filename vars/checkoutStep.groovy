@@ -18,6 +18,8 @@ def call(Map pipelineParams) {
     // Apply patch if specified
     script {
         if (pipelineParams.diff_id != '') {
+            sh "cd target && ls -l"
+
             sh "cd ${pipelineParams.directory} && \
                 arc patch ${pipelineParams.revision_id}"
         }
