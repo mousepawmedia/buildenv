@@ -1,0 +1,19 @@
+# MousePaw Media: Copy Archives Step
+
+This copies the artifacts from the last successful build of the projects that it depends on.
+
+## Calling
+
+Two parameters are required when calling this pipeline:
+
+* `directory`: name of the directory where the project is located.
+* `target`: path where the artifacts will be place`
+
+This should be called as a *step* in a pipeline:
+
+```groovy
+copyArchives(
+    'directory': 'onestring',
+    'target': 'workspace/focal/clang'
+)
+```
