@@ -5,6 +5,7 @@ def call(Map pipelineParams) {
             string(name: 'BRANCH', defaultValue: 'devel')
             string(name: 'PHID', defaultValue: '')
             string(name: 'DIFF_ID', defaultValue: '')
+            string (name: 'REVISION_ID', defaultValue: '')
             choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal'], description: 'Run on specific platform.')
         }
         environment {
@@ -35,7 +36,8 @@ def call(Map pipelineParams) {
                                 'repo': env.REPO,
                                 'branch': params.BRANCH,
                                 'directory': 'target',
-                                'diff_id': params.DIFF_ID
+                                'diff_id': params.DIFF_ID,
+                                'revision_id': params.REVISION_ID
                             )
                         }
                     }
@@ -253,12 +255,9 @@ def call(Map pipelineParams) {
         }
         post {
             always {
-                stage('Final Report') {
-                    // If a Phabricator PHID was provided...
-                    when { not {
-                        expression { params.PHID == '' }
-                    } }
-                    steps {
+                script {
+                    if (params.PHID != '') {
+                        // If a Phabricator PHID was provided...
                         step([
                             $class: 'PhabricatorNotifier',
                             //commentFile: '.phabricator-comment',
