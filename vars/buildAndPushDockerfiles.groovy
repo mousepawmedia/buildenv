@@ -4,8 +4,6 @@ def call(pipelineParams) {
     }
     environment {
         REPO = "${pipelineParams.repo}"
-        SHELL_BEFORE = "${pipelineParams.containsKey('shell_before') ? pipelineParams.shell_before : "."}"
-        SHELL_AFTER = "${pipelineParams.containsKey('shell_after') ? pipelineParams.shell_after : "."}"
     }
 
     agent any
