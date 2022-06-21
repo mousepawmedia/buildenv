@@ -39,7 +39,7 @@ def call(Map pipelineParams) {
                             axes {
                                 axis {
                                     name 'DOCKERFILE'
-                                    value 'bionic', 'focal'
+                                    values 'bionic', 'focal'
                                 }
                             }
                             stages {
@@ -63,7 +63,7 @@ def call(Map pipelineParams) {
                             axes {
                                 axis {
                                     name 'DOCKERFILE'
-                                    value 'bionic', 'focal'
+                                    values 'bionic', 'focal'
                                 }
                             }
                             stages {
