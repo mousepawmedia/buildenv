@@ -12,8 +12,8 @@ def call(pipelineParams) {
         stage('Build Environment') {
             agent {
                 node {
-                    label 'mpm-focal'
-                    customWorkspace '/workspace/focal/clang'
+                    label "mpm-focal"
+                    customWorkspace "/workspace/focal/clang"
                 }
             }
             stages {
