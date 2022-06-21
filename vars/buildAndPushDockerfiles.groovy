@@ -1,4 +1,4 @@
-def call(pipelineParams) {
+def call(Map pipelineParams) {
     parameters {
         string(name: 'BRANCH', defaultValue: 'devel')
     }
