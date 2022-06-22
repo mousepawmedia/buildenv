@@ -31,6 +31,9 @@ def call(Map pipelineParams) {
                     }
                     stage('Login') {
                         steps {
+
+                            sh 'printenv'
+
                             sh 'docker login registry.mousepawmedia.com'
                         }
                     }
