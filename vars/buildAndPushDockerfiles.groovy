@@ -7,31 +7,28 @@ def call(Map pipelineParams) {
             REPO = "${pipelineParams.repo}"
         }
 
-        agent any
-
+        agent {
+            docker { 
+                image 'docker:dind'
+                args '--privileged -d'
+            }
+        }
+        
         stages {
-            stage('Build Environment') {
-                agent {
-                    docker { 
-                        image 'docker:dind'
-                        args '--privileged -d'
-                    }
+            stage('Checkout') {
+                steps {
+
+                sh 'docker --version'
+
+                // checkoutStep(
+                //     'repo': env.REPO,
+                //     'branch': params.BRANCH,
+                //     'directory': 'target',
+                //     'diff_id': '',
+                //     'revision_id': ''
+                // )
                 }
-                stages {
-                    stage('Checkout') {
-                        steps {
-
-                            sh 'docker --version'
-
-                            // checkoutStep(
-                            //     'repo': env.REPO,
-                            //     'branch': params.BRANCH,
-                            //     'directory': 'target',
-                            //     'diff_id': '',
-                            //     'revision_id': ''
-                            // )
-                        }
-                    }
+            }
                     // stage('Login') {
                     //     steps {
 
@@ -88,8 +85,6 @@ def call(Map pipelineParams) {
                     //         }
                     //     }
                     // }
-                }
-            }
         }
     }
 }
