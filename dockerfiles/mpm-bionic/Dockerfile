@@ -50,7 +50,7 @@ RUN apt-get update && \
     ln -fs /usr/share/zoneinfo/America/
 
 # Development Core
-RUN apt-get install -y --no-install-recommends arcanist autoconf automake \
+RUN apt-get install -y --no-install-recommends arcanist autoconf automake arcanist-clang-format-linter \
     build-essential ca-certificates checkinstall cmake git libtool php php-curl \
     php-cli php-xml
 
