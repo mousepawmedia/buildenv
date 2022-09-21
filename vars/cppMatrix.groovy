@@ -35,16 +35,25 @@ def call(Map pipelineParams) {
                             checkoutStep(
                                 'repo': env.REPO,
                                 'branch': params.BRANCH,
-                                'directory': 'target',
-                                'diff_id': params.DIFF_ID,
-                                'revision_id': params.REVISION_ID
+                                'directory': env.PROJECT,
                             )
+                        }
+                    }
+                    stage('Patch Revision') {
+                        when {
+                            expression { params.DIFF_ID != '' }
+                        }
+                        steps {
+                            withCredentials([string(credentialsId: 'PhabricatorConduitKey', variable: 'TOKEN')])  {
+                                sh "cd ${env.PROJECT} && \
+                                    arc patch D${params.REVISION_ID} --conduit-token ${TOKEN}"
+                            }
                         }
                     }
                     stage('Copy Archive') {
                         steps {
                             copyArchives(
-                                'directory': 'target',
+                                'directory': env.PROJECT,
                                 'target': 'workspace/focal/clang'
                             )
                         }
@@ -54,19 +63,12 @@ def call(Map pipelineParams) {
                             timeout(time: 240, unit: "MINUTES", activity: true)
                         }
                         steps {
-                            script {
-                                sh "${env.SHELL_BEFORE}"
+                            sh "${env.SHELL_BEFORE}"
 
-                                // goldilocks must be built from stable branch
-                                if (env.PROJECT == 'goldilocks') {
-                                    sh "cd target && git checkout stable"
-                                }
-
-                                sh "cd target && \
+                            sh "cd ${env.PROJECT} && \
                                 make tester_debug"
                                 
-                                sh "${env.SHELL_AFTER}"
-                            }
+                            sh "${env.SHELL_AFTER}"
                         }
                     }
                     stage('Clean workspace') {
@@ -110,9 +112,19 @@ def call(Map pipelineParams) {
                                 checkoutStep(
                                     'repo': env.REPO,
                                     'branch': params.BRANCH,
-                                    'directory': 'target',
-                                    'diff_id': params.DIFF_ID
+                                    'directory': env.PROJECT,
                                 )
+                            }
+                        }
+                        stage('Patch Revision') {
+                            when {
+                                expression { params.DIFF_ID != '' }
+                            }
+                            steps {
+                                withCredentials([string(credentialsId: 'PhabricatorConduitKey', variable: 'TOKEN')])  {
+                                    sh "cd ${env.PROJECT} && \
+                                        arc patch D${params.REVISION_ID} --conduit-token ${TOKEN}"
+                                }
                             }
                         }
                         stage('Setup Environment') {
@@ -122,13 +134,13 @@ def call(Map pipelineParams) {
                             }
                             steps {
                                 sh "sudo update-alternatives --set cc /usr/bin/${env.CC} && \
-                                sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
+                                    sudo update-alternatives --set c++ /usr/bin/${env.CPP}"
                             }
                         }
                         stage('Copy Archive') {
                             steps {
                                 copyArchives(
-                                    'directory': 'target',
+                                    'directory': env.PROJECT,
                                     'target': "workspace/${OS}/${COMPILER}"
                                 )
                             }
@@ -141,19 +153,12 @@ def call(Map pipelineParams) {
                                 MAKE_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                script {  
-                                    sh "${env.SHELL_BEFORE}"
+                                sh "${env.SHELL_BEFORE}"
 
-                                    // goldilocks must be built from stable branch
-                                    if (env.PROJECT == 'goldilocks') {
-                                        sh "cd target && git checkout stable"
-                                    }
-
-                                    sh "cd target && \
-                                        make ${env.MAKE_WHAT}"
+                                sh "cd ${env.PROJECT} && \
+                                    make ${env.MAKE_WHAT}"
                                     
-                                    sh "${env.SHELL_AFTER}"
-                                }
+                                sh "${env.SHELL_AFTER}" 
                             }
                         }
                         stage('Test') {
@@ -164,7 +169,7 @@ def call(Map pipelineParams) {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "cd target && \
+                                sh "cd ${env.PROJECT} && \
                                 ./${env.RUN_WHAT} --runall"
                             }
                         }
@@ -176,7 +181,7 @@ def call(Map pipelineParams) {
                                 RUN_WHAT = "${env.TARGET == 'debug' ? 'tester_debug' : 'tester' }"
                             }
                             steps {
-                                sh "cd target && \
+                                sh "cd ${env.PROJECT} && \
                                 valgrind --leak-check=full --errors-for-leak-kinds=all --error-exitcode=1 ./${env.RUN_WHAT} --runall"
                             }
                         }
