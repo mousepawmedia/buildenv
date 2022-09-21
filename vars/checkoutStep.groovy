@@ -1,4 +1,4 @@
-// repo, branch, directory, diff_id
+// repo, branch, directory
 def call(Map pipelineParams) {
     checkout ([
         $class: 'GitSCM',
@@ -14,14 +14,4 @@ def call(Map pipelineParams) {
             url: "${pipelineParams.repo}"
         ]]
     ])
-
-    // Apply patch if specified
-    script {
-        if (pipelineParams.diff_id != '') {
-            sh "cd target && ls -l"
-
-            sh "cd ${pipelineParams.directory} && \
-                arc patch ${pipelineParams.revision_id}"
-        }
-    }
 }

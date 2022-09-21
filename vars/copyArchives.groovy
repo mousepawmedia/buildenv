@@ -1,3 +1,4 @@
+// directory, target 
 def call(Map pipelineParams) {
     script {
         // check if file exists

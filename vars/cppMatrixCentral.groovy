@@ -82,12 +82,6 @@ def call(Map pipelineParams) {
                                         sh "cd ${env.PROJECT} && \
                                             make ubuntu-fix-aclocal"
                                     }
-
-                                    // goldilocks must be built from stable branch
-                                    if (env.PROJECT == 'goldilocks') {
-                                        sh "cd ${env.PROJECT} && \
-                                            git checkout stable"
-                                    }
                                     
                                     sh "cd ${env.PROJECT} && make ready"
 
