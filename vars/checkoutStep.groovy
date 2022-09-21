@@ -18,10 +18,19 @@ def call(Map pipelineParams) {
     // Apply patch if specified
     script {
         if (pipelineParams.diff_id != '') {
-            sh "cd target && ls -l"
+            sh """
+            #!/bin/bash
 
-            sh "cd ${pipelineParams.directory} && \
-                arc patch ${pipelineParams.revision_id}"
+            cd ${pipelineParams.directory}
+            
+            if arc patch D${pipelineParams.revision_id}; then
+                echo "Successfully patched D${pipelineParams.revision_id}
+            else 
+                echo "Installing certificate"
+                arc install-certificate
+                arc patch D${pipelineParams.revision_id}
+            fi
+            """
         }
     }
 }
