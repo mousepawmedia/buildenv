@@ -24,7 +24,7 @@ def call(Map pipelineParams) {
             cd ${pipelineParams.directory}
             
             if arc patch D${pipelineParams.revision_id}; then
-                echo "Successfully patched D${pipelineParams.revision_id}
+                echo "Successfully patched D${pipelineParams.revision_id}"
             else 
                 echo "Installing certificate"
                 arc install-certificate
