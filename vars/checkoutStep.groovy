@@ -18,19 +18,24 @@ def call(Map pipelineParams) {
     // Apply patch if specified
     script {
         if (pipelineParams.diff_id != '') {
-            sh """
-            #!/bin/bash
 
-            cd ${pipelineParams.directory}
-            
-            if arc patch D${pipelineParams.revision_id}; then
-                echo "Successfully patched D${pipelineParams.revision_id}"
-            else 
-                echo "Installing certificate"
-                arc install-certificate
-                arc patch D${pipelineParams.revision_id}
-            fi
+            withCredentials([string(credentialsId: 'https://phab.mousepawmedia.com', variable: 'TOKEN')]) {
+                
+            sh """
+                #!/bin/bash
+
+                set +x
+                cd ${pipelineParams.directory}
+                
+                if arc patch D${pipelineParams.revision_id} --conduit-token ${TOKEN}; then
+                    echo "Successfully patched D${pipelineParams.revision_id}"
+                else 
+                    echo "Installing certificate"
+                    arc install-certificate
+                    arc patch D${pipelineParams.revision_id}
+                fi
             """
+            }
         }
     }
 }
