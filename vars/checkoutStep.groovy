@@ -19,7 +19,7 @@ def call(Map pipelineParams) {
     script {
         if (pipelineParams.diff_id != '') {
 
-            withCredentials([string(credentialsId: 'https://phab.mousepawmedia.com', variable: 'TOKEN')]) {
+            withCredentials([string(credentialsId: 'd29a819a-e02a-442b-bf47-049f9d77562f', variable: 'TOKEN')]) {
                 
             sh """
                 #!/bin/bash
