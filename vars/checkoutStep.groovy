@@ -20,7 +20,7 @@ def call(Map pipelineParams) {
         if (pipelineParams.diff_id != '') {
 
             withCredentials([[
-                $class: 'StringCredentials', 
+                $class: 'StringCredentialsBinding', 
                 credentialsId: 'd29a819a-e02a-442b-bf47-049f9d77562f', 
                 variable: 'TOKEN'
             ]]) {
