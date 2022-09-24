@@ -19,22 +19,26 @@ def call(Map pipelineParams) {
     script {
         if (pipelineParams.diff_id != '') {
 
-            withCredentials([string(credentialsId: 'd29a819a-e02a-442b-bf47-049f9d77562f', variable: 'TOKEN')]) {
+            withCredentials([[
+                $class: 'StringCredentials', 
+                credentialsId: 'd29a819a-e02a-442b-bf47-049f9d77562f', 
+                variable: 'TOKEN'
+            ]]) {
                 
-            sh """
+            sh '''
                 #!/bin/bash
 
                 set +x
-                cd ${pipelineParams.directory}
+                cd $pipelineParams.directory
                 
-                if arc patch D${pipelineParams.revision_id} --conduit-token ${TOKEN}; then
-                    echo "Successfully patched D${pipelineParams.revision_id}"
+                if arc patch D$pipelineParams.revision_id --conduit-token $TOKEN; then
+                    echo "Successfully patched D$pipelineParams.revision_id"
                 else 
                     echo "Installing certificate"
                     arc install-certificate
-                    arc patch D${pipelineParams.revision_id}
+                    arc patch D$pipelineParams.revision_id
                 fi
-            """
+            '''
             }
         }
     }
