@@ -50,7 +50,7 @@ RUN apt-get update && \
     ln -fs /usr/share/zoneinfo/America/
 
 # Development Core
-RUN apt-get install -y --no-install-recommends arcanist autoconf automake arcanist-clang-format-linter \
+RUN apt-get install -y --no-install-recommends autoconf automake \
     build-essential ca-certificates checkinstall cmake git libtool php php-curl \
     php-cli php-xml
 
@@ -90,6 +90,16 @@ RUN apt-get install -y --no-install-recommends python3 python3-pip \
 
 # Sphinx
 RUN apt-get install -y --no-install-recommends python3-sphinx pandoc
+
+# Arcanist
+RUN mkdir -p /usr/share/.arcanist && \
+    cd /usr/share/.arcanist && \
+    git clone https://github.com/phorgeit/arcanist.git && \
+    ln -s /usr/share/.arcanist/arcanist/bin/arc /usr/bin/arc
+
+# Arcanist Clang Format Linter.
+RUN cd /usr/share/.arcanist && \
+    git clone https://github.com/vhbit/clang-format-linter.git
 
 # Python 3.8.8 manual install
 # RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
