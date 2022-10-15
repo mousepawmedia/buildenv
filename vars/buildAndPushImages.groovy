@@ -18,7 +18,7 @@ def call(Map pipelineParams) {
             stage('Checkout') {
                 steps {
 
-                sh 'docker --version'
+                sh 'docker images'
 
                 // checkoutStep(
                 //     'repo': env.REPO,
