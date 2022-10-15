@@ -86,7 +86,7 @@ RUN apt-get install -y --no-install-recommends gcc-11 g++-11 gcc-11-multilib \
 
 # Python
 RUN apt-get install -y --no-install-recommends python3 python3-pip \
-    python3-virtualenv pylint3 python-dev python3-dev virtualenv
+    python3-virtualenv python3-dev virtualenv
 
 # Sphinx
 RUN apt-get install -y --no-install-recommends python3-sphinx pandoc
