@@ -1,9 +1,9 @@
-# Jenkins Slave: MousePaw Media Build Environment (Bionic)
-# Version: 1.2.1
+# Jenkins Worker: MousePaw Media Build Environment (Bionic)
+# Version: 1.3.0
 #
-# Converts any Ubuntu-based image (FROM ...) into a Jenkins slave.
+# Converts any Ubuntu-based image (FROM ...) into a Jenkins worker.
 #
-# Author(s): Jason C. McDonald
+# Author(s): Gerar Almonte, Jason C. McDonald
 #
 # Assistance from Gavin Mogan <halkeye>
 
@@ -46,7 +46,7 @@
 # See https://www.mousepawmedia.com/developers for information
 # on how to contribute to our projects.
 
-FROM registry.mousepawmedia.com/mpm-hirsute:latest
+FROM registry.mousepawmedia.com/mpm-jammy:latest
 
 LABEL MAINTAINER="MousePaw Media <developers@mousepawmedia.com>"
 
