@@ -1,7 +1,7 @@
 # MousePaw Media Build Environment (Bionic)
-# Version: 1.2.1
+# Version: 1.3.0
 #
-# Author(s): Jason C. McDonald
+# Author(s): Gerar Almonte, Jason C. McDonald
 
 # LICENSE (BSD-3-Clause)
 # Copyright (c) 2019 MousePaw Media.
@@ -51,7 +51,7 @@ RUN apt-get update && \
 
 # Development Core
 RUN apt-get install -y --no-install-recommends autoconf automake \
-    build-essential ca-certificates checkinstall cmake git libtool php php-curl \
+    build-essential checkinstall cmake git libtool php php-curl \
     php-cli php-xml
 
 # C/C++ Core
@@ -100,6 +100,17 @@ RUN mkdir -p /usr/share/.arcanist && \
 # Arcanist Clang Format Linter.
 RUN cd /usr/share/.arcanist && \
     git clone https://github.com/vhbit/clang-format-linter.git
+
+# Docker
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl gnupg lsb-release && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Python 3.8.8 manual install
 # RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \

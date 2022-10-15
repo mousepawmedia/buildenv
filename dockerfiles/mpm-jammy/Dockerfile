@@ -1,7 +1,7 @@
-# MousePaw Media Build Environment (Hirsute)
-# Version: 1.2.1
+# MousePaw Media Build Environment (Jammy)
+# Version: 1.3.0
 #
-# Author(s): Jason C. McDonald
+# Author(s): Gerar Almonte, Jason C. McDonald
 
 # LICENSE (BSD-3-Clause)
 # Copyright (c) 2019 MousePaw Media.
@@ -37,7 +37,7 @@
 # See https://www.mousepawmedia.com/developers for information
 # on how to contribute to our projects.
 
-FROM ubuntu:hirsute
+FROM ubuntu:jammy
 
 LABEL MAINTAINER="MousePaw Media <developers@mousepawmedia.com>"
 
@@ -86,7 +86,7 @@ RUN apt-get install -y --no-install-recommends gcc-11 g++-11 gcc-11-multilib \
 
 # Python
 RUN apt-get install -y --no-install-recommends python3 python3-pip \
-    python3-virtualenv pylint3 python-dev python3-dev virtualenv
+    python3-virtualenv python3-dev virtualenv
 
 # Sphinx
 RUN apt-get install -y --no-install-recommends python3-sphinx pandoc
@@ -100,6 +100,17 @@ RUN mkdir -p /usr/share/.arcanist && \
 # Arcanist Clang Format Linter.
 RUN cd /usr/share/.arcanist && \
     git clone https://github.com/vhbit/clang-format-linter.git
+
+# Docker
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl gnupg lsb-release && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Python 3.8.8 manual install
 # RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
