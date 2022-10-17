@@ -4,7 +4,7 @@ def call(Map pipelineParams) {
         parameters {
             string(name: 'BRANCH', defaultValue: 'devel')
             string(name: 'PHID', defaultValue: '')
-            choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal'], description: 'Run on specific platform.')
+            choice(name: 'OS_FILTER', choices: ['all', 'bionic', 'focal', 'jammy'], description: 'Run on specific platform.')
         }
         environment {
             PROJECT = "${pipelineParams.project}"
@@ -33,7 +33,7 @@ def call(Map pipelineParams) {
                     axes {
                         axis {
                             name 'OS'
-                            values 'bionic', 'focal'
+                            values 'bionic', 'focal', 'jammy'
                         }
                         axis {
                             name 'COMPILER'
