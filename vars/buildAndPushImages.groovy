@@ -48,7 +48,7 @@ def call(Map pipelineParams) {
                         stage('Build') {
                             steps {
                                 echo "Building Dockerfiles..."
-                                sh "sudo docker build target/dockerfiles/mpm-${DOCKERFILE}"
+                                sh "sudo docker build -t registry.mousepawmedia.com/mpm-${DOCKERFILE}:latest target/dockerfiles/mpm-${DOCKERFILE}"
                             }
                         }
                         stage('Publish') {
@@ -73,7 +73,7 @@ def call(Map pipelineParams) {
                         stage('Build') {
                             steps {
                                 echo "Building Dockerfiles..."
-                                sh "sudo docker build target/dockerfiles/jenkins.mpm-${DOCKERFILE}"
+                                sh "sudo docker build -t registry.mousepawmedia.com/jenkins.mpm-${DOCKERFILE}:latest target/dockerfiles/jenkins.mpm-${DOCKERFILE}"
                             }
                         }
                         stage('Publish') {
