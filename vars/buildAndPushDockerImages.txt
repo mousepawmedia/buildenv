@@ -1,0 +1,44 @@
+# MousePaw Media: Builder for Dockerfiles
+
+This runs a pipeline to build and push Dockerfiles to registry.mousepawmedia.com
+
+## Requirements and Assumptions
+
+The Jenkins instance using this must provide Docker agents from the
+Dockerfiles provided in this repository. These should have the labels
+`mpm-CODENAME`, where `CODENAME` is the Ubuntu codename that relates to the
+Docker image, e.g. `mpm-focal`.
+
+Git must be configured on the Jenkins instance as well, using the
+credential ID `git-ssh`.
+
+The repository must use the MousePaw Media Build System 3.2.0 or later.
+
+## Calling
+
+Onlye one parameter is required when calling this pipeline:
+
+* `repo`: the SSH URL for the repository to clone
+
+```groovy
+cppMatrix(
+    repo: 'ssh://git@example.com/source/spameggs.git'
+)
+```
+
+When triggering the build, you may specify any of the following additional
+parameters, all of which are optional:
+
+* `BRANCH`: the branch to build/patch on (default `devel`).
+
+The Matrix build will go through six steps:
+
+* Build Environment: build on all Dockerfiles
+    * Checkout: Clone the repository and patch in the specified `DIFF_ID` (if any).
+    * Login: Login to registry.mousepawmedia.com
+    * Build & Push mpm-* Dockerfiles: Build and publish on all mpm-* Dockerfiles
+        * Build: Build the image.
+        * Publish: Publish the image to registry.mousepawmedia.com
+    * Build & Push jenkins.mpm-* Dockerfiles: Build and publish on all jenkins.mpm-* Dockerfiles
+        * Build: Build the image.
+        * Publish: Publish the image to registry.mousepawmedia.com
