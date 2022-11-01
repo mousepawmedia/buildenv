@@ -140,10 +140,10 @@ RUN groupadd -g 888 mpm && \
     useradd -mr -u 888 -g mpm mpm && \
     echo "mpm  ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/mpm
 
+# Switch to user
+USER mpm
+
 # Configure git username and email 
 RUN git config --global user.name "ldmouse" && \
     git config --global user.email "ldmouse@mousepawmedia.com" && \
-    mkdir -p .git/arc; echo origin/devel > .git/arc/default-relative-commit
-
-# Switch to user
-USER mpm
+    mkdir -p ~/.git/arc; echo origin/devel > ~/.git/arc/default-relative-commit
